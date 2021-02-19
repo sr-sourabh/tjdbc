@@ -16,5 +16,12 @@ grants for 'test'@'localhost';
 use
 tjdbc;
 
+create table student
+(
+    name varchar(10),
+    id   int
+);
 
+insert into student
+values ("shourabh", 22);
 
