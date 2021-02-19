@@ -1,9 +1,11 @@
 package com.iiitb.tjdbc;
 
-import com.iiitb.tjdbc.util.Try;
+import static com.iiitb.tjdbc.util.ConnectionDetails.DBNAME;
 
 public class Application {
+
+
     public static void main(String[] args) {
-        System.out.println(Try.test);
+        System.out.println(DBNAME);
     }
 }
