@@ -1,6 +1,6 @@
 package com.iiitb.tjdbc.core;
 
-import com.sun.xml.internal.ws.util.StringUtils;
+//import com.sun.xml.internal.ws.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,7 +23,12 @@ public class TStatement {
 
         } else if (keywordPositionMap.containsKey(TJdbc.FIRST)) {
 
+            handlefirst(keywordPositionMap,tokens);
+        } else if (keywordPositionMap.containsKey(TJdbc.LAST)) {
+
+            handlelast(keywordPositionMap,tokens);
         }
+
 
         return query;
     }
@@ -40,4 +45,35 @@ public class TStatement {
         }
         return tokens;
     }
+    public void handlefirst(Map<String, Integer> keywordPositionMap, List<String> tokens)
+    {
+        int i=0;
+        String query = "";
+        String where = "";
+        for (String s : tokens) {
+            if (s.equals("first"))
+                continue;
+            if (s.equals("where"))
+                i=1;
+            if (i==1)
+                where = where + s + " ";
+            else
+                query  = query + s + " ";
+        }
+        query = query + "d join audit a on d.domain_id = a.id_d "+ where +"order by a.starttime limit 1;";
+//        select * from domain d join audit a on d.domain_id = a.id_d where name="ayush" order by a.starttime limit 1;
+
+    }
+
+    public void handlelast(Map<String, Integer> keywordPositionMap, List<String> tokens)
+    {
+        String query = "";
+        for (String s : tokens) {
+            if (s.equals("last"))
+                continue;
+                query  = query + s + " ";
+        }
+        query = query +";";
+    }
+
 }
