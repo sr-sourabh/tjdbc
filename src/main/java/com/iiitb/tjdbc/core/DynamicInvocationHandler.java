@@ -19,7 +19,7 @@ public class DynamicInvocationHandler implements InvocationHandler {
     @Override
     public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
         if (method.getName().equals(EXECUTE_QUERY)) {
-            tStatement.processQuery(objects[0].toString());
+            objects[0] = tStatement.processQuery(objects[0].toString());
         }
         return method.invoke(target, objects);
     }
