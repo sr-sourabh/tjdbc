@@ -17,7 +17,7 @@ public class Application {
             Class.forName(DRIVER);
             Connection connection = DriverManager.getConnection(getUrl(), USER, PASSWORD);
             Statement statement = TJdbc.createStatement(connection);
-            String query = "Temporalize student";
+            String query = "Select first salary from domain where name='ayush'";
             ResultSet resultset = statement.executeQuery(query);
 
             while (resultset.next()) {
