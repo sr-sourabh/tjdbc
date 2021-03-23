@@ -16,7 +16,7 @@ public class Application {
             Statement statement = TJdbc.createStatement(connection);
 
             //uncomment only the part you are working on
-            //executeTemporalize(statement);
+            executeTemporalize(statement);
             //executeFirst(statement);
             //exectuteLast(statement);
             connection.close();
