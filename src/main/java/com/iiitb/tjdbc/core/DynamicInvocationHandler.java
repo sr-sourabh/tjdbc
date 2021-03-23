@@ -23,6 +23,6 @@ public class DynamicInvocationHandler implements InvocationHandler {
             objects[0] = tStatement.processQuery(objects[0].toString());
             System.out.println("OBJ[0] : " + objects[0]);
         }
-        return method.invoke(target,objects);
+        return method.invoke(target, objects);
     }
 }
