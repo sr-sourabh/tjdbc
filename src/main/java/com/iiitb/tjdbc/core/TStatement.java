@@ -1,5 +1,7 @@
 package com.iiitb.tjdbc.core;
 
+import com.sun.org.apache.xpath.internal.objects.XString;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,9 +28,9 @@ public class TStatement {
             System.out.println(tableName);
 
         } else if (keywordPositionMap.containsKey(TJdbc.FIRST)) {
-            handlefirst(keywordPositionMap, tokens);
+            query = handlefirst(keywordPositionMap, tokens);
         } else if (keywordPositionMap.containsKey(TJdbc.LAST)) {
-            handlelast(keywordPositionMap, tokens);
+            query = handlelast(keywordPositionMap, tokens);
         }
 
         return query;
@@ -48,7 +50,7 @@ public class TStatement {
         return tokens;
     }
 
-    public void handlefirst(Map<String, Integer> keywordPositionMap, List<String> tokens) {
+    public String handlefirst(Map<String, Integer> keywordPositionMap, List<String> tokens) {
         int i = 0;
         String query = "";
         String where = "";
@@ -62,12 +64,17 @@ public class TStatement {
             else
                 query = query + s + " ";
         }
-        query = query + "d join audit a on d.domain_id = a.id_d " + where + "order by a.starttime limit 1;";
+        if(where == "")
+            query= "select * from domain d join audit a on d.domain_id = a.id_d  where (domain_id,a.starttime) in(select domain_id,min(a.starttime) from domain d join audit a on d.domain_id = a.id_d group by domain_id);";
+        else
+            query = query + "d join audit a on d.domain_id = a.id_d " + where + "order by a.starttime limit 1;";
 //        select * from domain d join audit a on d.domain_id = a.id_d where name="ayush" order by a.starttime limit 1;
+//      select * from domain d join audit a on d.domain_id = a.id_d  where (domain_id,a.starttime) in(select domain_id,min(a.starttime) from domain d join audit a on d.domain_id = a.id_d group by domain_id);
 
+        return query;
     }
 
-    public void handlelast(Map<String, Integer> keywordPositionMap, List<String> tokens) {
+    public String handlelast(Map<String, Integer> keywordPositionMap, List<String> tokens) {
         String query = "";
         for (String s : tokens) {
             if (s.equals("last"))
@@ -75,6 +82,8 @@ public class TStatement {
             query = query + s + " ";
         }
         query = query + ";";
+
+        return query;
     }
 
 }

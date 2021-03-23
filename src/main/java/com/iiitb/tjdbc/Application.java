@@ -36,7 +36,7 @@ public class Application {
     }
 
     private static void executeFirst(Statement statement) throws SQLException {
-        String query = "Select first salary from domain where name='ayush'";
+        String query = "Select last salary from domain where name='ayush'";
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
@@ -45,7 +45,7 @@ public class Application {
     }
 
     private static void executeTemporalize(Statement statement) throws SQLException {
-        String query = "Temporalize student";
+        String query = "Select last salary from domain where name='ayush'";
         statement.executeUpdate(query);
     }
 }
