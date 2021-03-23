@@ -21,10 +21,17 @@ public class TStatement {
 
         if (keywordPositionMap.containsKey(TJdbc.TEMPORALIZE)) {
 
-        } else if (keywordPositionMap.containsKey(TJdbc.FIRST)) {
-            handlefirst(keywordPositionMap,tokens);
-        } else if (keywordPositionMap.containsKey(TJdbc.LAST)) {
+            String tableName = tokens.get(1);
+            String tempTable = tableName + "_VT";
+            String tempQuery = "CREATE TABLE " +tempTable+ "(id integer ,idx integer,updated_value varchar(10),prev_value varchar(10),starttime timestamp,endtime timestamp,id_d integer);";
+            query = tempQuery;
+            System.out.println(tableName);
 
+        }
+        else if (keywordPositionMap.containsKey(TJdbc.FIRST)) {
+            handlefirst(keywordPositionMap,tokens);
+        }
+        else if (keywordPositionMap.containsKey(TJdbc.LAST)) {
             handlelast(keywordPositionMap,tokens);
         }
 
@@ -41,9 +48,9 @@ public class TStatement {
                 }
             }
         }
+
         return tokens;
     }
-
     public void handlefirst(Map<String, Integer> keywordPositionMap, List<String> tokens)
     {
         int i=0;
@@ -74,4 +81,5 @@ public class TStatement {
         }
         query = query +";";
     }
+
 }

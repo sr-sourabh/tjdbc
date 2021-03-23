@@ -9,4 +9,5 @@ public class CommonUtils {
     }
 
     public static final String EXECUTE_QUERY = "executeQuery";
+    public static final String EXECUTE_UPDATE = "executeUpdate";
 }
