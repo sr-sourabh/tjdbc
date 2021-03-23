@@ -17,13 +17,17 @@ public class Application {
             Class.forName(DRIVER);
             Connection connection = DriverManager.getConnection(getUrl(), USER, PASSWORD);
             Statement statement = TJdbc.createStatement(connection);
-            String query = "Select first salary from domain where name='ayush'";
-            ResultSet resultset = statement.executeQuery(query);
 
-            while (resultset.next()) {
-                System.out.println(resultset.getString(1) + " " + resultset.getInt(2));
-            }
+            String query = "Temporalize student";
+            System.out.println("Connection Established!!");
 
+            statement.executeUpdate(query);
+
+            System.out.println("query is : " + query);
+            //System.out.println("Rows affected : " + res);
+            /*while (resultset.next()) {
+                    System.out.println(resultset.getString(1) + " " + resultset.getInt(2));
+            }*/
             connection.close();
 
         } catch (Exception e) {

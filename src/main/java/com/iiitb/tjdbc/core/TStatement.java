@@ -21,11 +21,15 @@ public class TStatement {
 
         if (keywordPositionMap.containsKey(TJdbc.TEMPORALIZE)) {
 
-        } else if (keywordPositionMap.containsKey(TJdbc.FIRST)) {
-            handlefirst(keywordPositionMap,tokens);
-        } else if (keywordPositionMap.containsKey(TJdbc.LAST)) {
+            String tableName = tokens.get(1);
+            String tempTable = tableName + "_VT";
+            String tempQuery = "CREATE TABLE " +tempTable+ "(id integer ,idx integer,updated_value varchar(10),prev_value varchar(10),starttime timestamp,endtime timestamp,id_d integer);";
+            query = tempQuery;
+            System.out.println(tableName);
 
-            handlelast(keywordPositionMap,tokens);
+        }
+        else if (keywordPositionMap.containsKey(TJdbc.FIRST)) {
+
         }
 
         return query;
@@ -41,37 +45,9 @@ public class TStatement {
                 }
             }
         }
+
         return tokens;
     }
 
-    public void handlefirst(Map<String, Integer> keywordPositionMap, List<String> tokens)
-    {
-        int i=0;
-        String query = "";
-        String where = "";
-        for (String s : tokens) {
-            if (s.equals("first"))
-                continue;
-            if (s.equals("where"))
-                i=1;
-            if (i==1)
-                where = where + s + " ";
-            else
-                query  = query + s + " ";
-        }
-        query = query + "d join audit a on d.domain_id = a.id_d "+ where +"order by a.starttime limit 1;";
-//        select * from domain d join audit a on d.domain_id = a.id_d where name="ayush" order by a.starttime limit 1;
 
-    }
-
-    public void handlelast(Map<String, Integer> keywordPositionMap, List<String> tokens)
-    {
-        String query = "";
-        for (String s : tokens) {
-            if (s.equals("last"))
-                continue;
-            query  = query + s + " ";
-        }
-        query = query +";";
-    }
 }
