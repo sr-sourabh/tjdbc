@@ -2,17 +2,19 @@
 create
 database tjdbc;
 
+--create a test user
 CREATE
 USER 'test'@'localhost' IDENTIFIED BY 'test';
 
+--grant priveleges to test user
 GRANT ALL PRIVILEGES ON  tjdbc.* TO
 'test'@'localhost';
 
---check
+--check if priveleges updated
 show
 grants for 'test'@'localhost';
 
---switch to test user
+--switch to test user then
 use
 tjdbc;
 
