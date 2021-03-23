@@ -20,7 +20,8 @@ public class Application {
 
             String query = "Temporalize student";
             System.out.println("Connection Established!!");
-
+            /*String query = "Select first salary from domain where name='ayush'";
+            ResultSet resultset = statement.executeQuery(query);*/
             statement.executeUpdate(query);
 
             System.out.println("query is : " + query);
