@@ -10,6 +10,7 @@ import java.util.Set;
 public class TJdbc {
 
     private final Set<String> keywords = new HashSet<>();
+    public static final String LAST = "last";
     public static final String FIRST = "first";
     public static final String TEMPORALIZE = "temporalize";
 
@@ -18,6 +19,7 @@ public class TJdbc {
     }
 
     private void populateKeyWords() {
+        keywords.add(LAST);
         keywords.add(FIRST);
         keywords.add(TEMPORALIZE);
     }
