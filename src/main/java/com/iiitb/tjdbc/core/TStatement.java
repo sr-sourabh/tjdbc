@@ -65,7 +65,7 @@ public class TStatement {
                 query = query + s + " ";
         }
         if(where == "")
-            query= "select * from domain d join audit a on d.domain_id = a.id_d  where (domain_id,a.starttime) in(select domain_id,min(a.starttime) from domain d join audit a on d.domain_id = a.id_d group by domain_id);";
+            query= query +"d join audit a on d.domain_id = a.id_d  where (domain_id,a.starttime) in(select domain_id,min(a.starttime) from domain d join audit a on d.domain_id = a.id_d group by domain_id);";
         else
             query = query + "d join audit a on d.domain_id = a.id_d " + where + "order by a.starttime limit 1;";
 //        select * from domain d join audit a on d.domain_id = a.id_d where name="ayush" order by a.starttime limit 1;
