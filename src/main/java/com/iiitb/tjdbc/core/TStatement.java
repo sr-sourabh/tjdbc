@@ -33,6 +33,8 @@ public class TStatement {
             query = handleInsert(query, tokens);
         } else if (keywordPositionMap.containsKey(TJdbc.TUPDATE)) {
             query = handleTUpdate(query, tokens, keywordPositionMap, statement);
+        } else if(keywordPositionMap.containsKey(TJdbc.TSELECT)){
+            query = handleTSelect(query,tokens,keywordPositionMap,statement);
         }
 
         return query;
@@ -127,6 +129,34 @@ public class TStatement {
         }
 
         return tokens;
+    }
+
+    public String handleTSelect(String query,List<String> tokens,Map<String,Integer> keywordPositionMap,Statement statement) throws SQLException{
+
+        // "tselect gpa from student where id=1 and date='2019-01-12' "
+
+        String tableName = getToken(keywordPositionMap, tokens, TJdbc.TSELECT, 3);
+        Map<String,Integer> columnNameIndexMap = getColumnNameIndexMap(tableName,statement);
+        int indx = columnNameIndexMap.get(tokens.get(1));
+        //
+        String tableVT = tableName + "_vt";
+        int idIndx = 0; // stores the index where the id resides
+        int dateIndx=0; // stores the index where the date resides
+        int n = tokens.size();
+        for(int i=0;i<tokens.size();i++){
+            if(tokens.get(i).equals("id")){
+                idIndx = i+2;
+            }
+            if(tokens.get(i).equals("date")){
+                dateIndx = i+2;
+            }
+        }
+        String id_id = tokens.get(idIndx);
+        String time = tokens.get(dateIndx);
+        String tempQuery = "select * from " + tableVT + " where indx = "+indx + " and id_id = "+ id_id +" and vst<= "+
+                time + " and vet > " + time + " ;";
+        query = tempQuery;
+        return query;
     }
 
 
