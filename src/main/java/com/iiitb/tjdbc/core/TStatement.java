@@ -23,7 +23,7 @@ public class TStatement {
         tokens = tokenize(query, tokens, keywordPositionMap);
 
         if (keywordPositionMap.containsKey(TJdbc.TEMPORALIZE)) {
-            query = handleTemporalize(tokens);
+            query = handleTemporalize(tokens,statement);
             System.out.println(query);
         } else if (keywordPositionMap.containsKey(TJdbc.FIRST)) {
             query = handlefirst(keywordPositionMap, tokens);
