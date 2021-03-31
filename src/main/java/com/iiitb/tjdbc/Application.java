@@ -17,9 +17,9 @@ public class Application {
 
             //uncomment only the part you are working on
             //executeTemporalize(statement);
-            executeInsert(statement);
+            //executeInsert(statement);
             //executeFirst(statement);
-            //exectuteLast(statement);
+            executeLast(statement);
             connection.close();
 
         } catch (Exception e) {

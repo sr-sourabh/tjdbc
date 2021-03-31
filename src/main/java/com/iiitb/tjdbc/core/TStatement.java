@@ -22,9 +22,9 @@ public class TStatement {
             System.out.println(query);
 
         } else if (keywordPositionMap.containsKey(TJdbc.FIRST)) {
-            handlefirst(keywordPositionMap, tokens);
+            query = handlefirst(keywordPositionMap, tokens);
         } else if (keywordPositionMap.containsKey(TJdbc.LAST)) {
-            handlelast(keywordPositionMap, tokens);
+            query = handlelast(keywordPositionMap, tokens);
         }else if (keywordPositionMap.containsKey(TJdbc.INSERT)) {
             System.out.println("hey" + query);
            query = handleInsert(query, tokens);
@@ -46,6 +46,7 @@ public class TStatement {
 
         return tokens;
     }
+
 
     public String handleTemporalize(List<String> tokens){
         String tableName = tokens.get(1);
@@ -81,12 +82,17 @@ public class TStatement {
             else
                 query = query + s + " ";
         }
-        query = query + "d join audit a on d.domain_id = a.id_d " + where + "order by a.starttime limit 1;";
-//        select * from domain d join audit a on d.domain_id = a.id_d where name="ayush" order by a.starttime limit 1;
+        if (where == "")
+            query = query + "d join student_VT a on d.id = a.id_student  where (d.id,a.VST) in(select d.id,min(a.VST) from student d join student_VT a on d.id = a.id_student group by d.id);";
+        else
+            query = query + "d join student_VT a on d.id = a.id_student " + where + "order by a.VST limit 1;";
+//        select * from student d join student_VT a on d.id = a.id_student where name="ayush" order by a.VST limit 1;
+//      select * from student d join student_VT a on d.id = a.id_student  where (d.id,a.VST) in(select d.id,min(a.VST) from student d join student_VT a on d.id = a.id_student group by d.id);
 
+        return query;
     }
 
-    public void handlelast(Map<String, Integer> keywordPositionMap, List<String> tokens) {
+    public String handlelast(Map<String, Integer> keywordPositionMap, List<String> tokens) {
         String query = "";
         for (String s : tokens) {
             if (s.equals("last"))
@@ -94,6 +100,8 @@ public class TStatement {
             query = query + s + " ";
         }
         query = query + ";";
+
+        return query;
     }
 
 }
