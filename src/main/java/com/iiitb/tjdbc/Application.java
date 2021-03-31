@@ -27,13 +27,13 @@ public class Application {
         }
     }
 
-    private static void executeInsert(Statement statement) throws SQLException {
+    private static void executeInsert(Statement statement) throws SQLException{
         String query = "insert into student values (6,'Henry','active','3.75','CSE')";
         statement.executeUpdate(query);
     }
 
     private static void executeLast(Statement statement) throws SQLException {
-        String query = "Select last * from student where name='ayush'";
+        String query = "Select last salary from domain where name='ayush'";
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
@@ -42,7 +42,7 @@ public class Application {
     }
 
     private static void executeFirst(Statement statement) throws SQLException {
-        String query = "Select first * from student";
+        String query = "Select first salary from domain where name='ayush'";
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
