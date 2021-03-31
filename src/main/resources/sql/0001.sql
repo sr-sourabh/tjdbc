@@ -20,15 +20,22 @@ tjdbc;
 
 create table student
 (
-    id   int primary key,
-    name varchar(10),
+    id     int primary key,
+    name   varchar(10),
     status varchar(10),
-    gpa varchar(10),
-    major varchar(10),
-    LSST timestamp,
-    LSET timestamp
+    gpa    varchar(10),
+    major  varchar(10),
+    lsst   timestamp,
+    lset   timestamp
 );
 
-insert into student
-values ("shourabh", 22);
-
+CREATE TABLE student_vt
+(
+    id            integer primary key,
+    indx          integer,
+    updated_value varchar(10),
+    prev_value    varchar(10),
+    vst           timestamp,
+    vet           timestamp,
+    id_id         int
+);

@@ -19,7 +19,8 @@ public class Application {
             //executeTemporalize(statement);
             //executeInsert(statement);
             //executeFirst(statement);
-            executeLast(statement);
+            //executeLast(statement);
+            executeTUpdate(statement);
             connection.close();
 
         } catch (Exception e) {
@@ -27,8 +28,13 @@ public class Application {
         }
     }
 
-    private static void executeInsert(Statement statement) throws SQLException{
-        String query = "insert into student values (6,'Henry','active','3.75','CSE')";
+    private static void executeTUpdate(Statement statement) throws SQLException {
+        String query = "tupdate from student ;";
+        statement.executeUpdate(query);
+    }
+
+    private static void executeInsert(Statement statement) throws SQLException {
+        String query = "tinsert into student values (6,'Henry','active','3.75','CSE')";
         statement.executeUpdate(query);
     }
 
