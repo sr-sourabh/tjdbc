@@ -16,11 +16,11 @@ public class Application {
             Statement statement = TJdbc.createStatement(connection);
 
             //uncomment only the part you are working on
-            //executeTemporalize(statement);
+            executeTemporalize(statement);
             //executeInsert(statement);
             //executeFirst(statement);
             //executeLast(statement);
-            executeTUpdate(statement);
+            //executeTUpdate(statement);
             connection.close();
 
         } catch (Exception e) {
@@ -29,7 +29,7 @@ public class Application {
     }
 
     private static void executeTUpdate(Statement statement) throws SQLException {
-        String query = "tupdate from student ;";
+        String query = "tupdate student set gpa = 8.2 where id = 1 ";
         statement.executeUpdate(query);
     }
 
@@ -57,7 +57,7 @@ public class Application {
     }
 
     private static void executeTemporalize(Statement statement) throws SQLException {
-        String query = "Temporalize student";
+        String query = "Temporalize ssss";
         statement.executeUpdate(query);
     }
 }

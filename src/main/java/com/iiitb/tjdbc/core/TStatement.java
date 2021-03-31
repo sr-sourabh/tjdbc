@@ -39,11 +39,67 @@ public class TStatement {
     }
 
     private String handleTUpdate(String query, List<String> tokens, Map<String, Integer> keywordPositionMap, Statement statement) throws SQLException {
-        String tableName = getTableName(keywordPositionMap, tokens);
+        String tableName = getToken(keywordPositionMap, tokens, TJdbc.TUPDATE, 1);
         Map<String, Integer> columnNameIndexMap = getColumnNameIndexMap(tableName, statement);
-        return query;
+        query = query.replace(TJdbc.TUPDATE, "update");
+        String pureUpdateQuery = query;
+
+        String tableVt = tableName + "_vt";
+        int indx = columnNameIndexMap.get(getToken(keywordPositionMap, tokens, TJdbc.SET, 1));
+
+        //get prev value from original table and corresponding table id
+        ResultSet rsForPrevValues = getPrevValueRs(statement, tokens, keywordPositionMap, query, tableName);
+        String prevValue = rsForPrevValues.getString(1);
+        String idId = rsForPrevValues.getString(2);
+
+        //update end date in vt table
+        String selectLastRecordTableVtQuery = "select id from " + tableVt + " where indx = " + indx +
+                " and vet is NULL and id_id = " + idId + " limit 1 ; ";
+        ResultSet resultSet = statement.executeQuery(selectLastRecordTableVtQuery);
+        Integer idToUpdateDate = null;
+        if (resultSet.next()) {
+            idToUpdateDate = resultSet.getInt(1);
+        }
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        String vet = timestamp.toString();
+        if (Objects.nonNull(idToUpdateDate)) {
+            String updateDateQuery = "update " + tableVt + " set vet = '" + vet + "' where id = " + idToUpdateDate;
+            statement.executeUpdate(updateDateQuery);
+        }
+
+        String updatedValue = getUpdateValue(tokens);
+
+        //insert new record in vt table to reflect update
+        String insertHistoryRecordTableVtQuery = "insert into " + tableVt +
+                " (indx, updated_value, prev_value, vst, id_id) values (" +
+                indx + ", '" + updatedValue + "', '" + prevValue + "', '" + vet + "', " + Integer.parseInt(idId) + ")";
+        statement.executeUpdate(insertHistoryRecordTableVtQuery);
+
+
+        return pureUpdateQuery;
     }
 
+    private String getUpdateValue(List<String> tokens) {
+        int i = 0;
+        while (i < tokens.size() && !tokens.get(i).equals("=")) i++;
+        return tokens.get(i + 1);
+    }
+
+    private ResultSet getPrevValueRs(Statement statement, List<String> tokens, Map<String, Integer> keywordPositionMap, String query, String tableName) throws SQLException {
+        String columnName = getToken(keywordPositionMap, tokens, TJdbc.SET, 1);
+        String selectPrevValueQuery = "select " + columnName + ", id " + " from " + tableName;
+        int i = 0;
+        while (i < tokens.size() && !tokens.get(i).equals("where")) {
+            i++;
+        }
+        while (i < tokens.size()) {
+            selectPrevValueQuery += " " + tokens.get(i);
+            i++;
+        }
+        ResultSet resultSet = statement.executeQuery(selectPrevValueQuery);
+        resultSet.next();
+        return resultSet;
+    }
 
     private Map<String, Integer> getColumnNameIndexMap(String tableName, Statement statement) throws SQLException {
         ResultSet resultSet = statement.executeQuery("desc " + tableName + ";");
@@ -55,8 +111,8 @@ public class TStatement {
         return columnNameIndexMap;
     }
 
-    private String getTableName(Map<String, Integer> keywordPositionMap, List<String> tokens) {
-        return tokens.get(keywordPositionMap.getOrDefault(TJdbc.FROM, 0) + 1);
+    private String getToken(Map<String, Integer> keywordPositionMap, List<String> tokens, String keyword, int offset) {
+        return tokens.get(keywordPositionMap.getOrDefault(keyword, 0) + offset);
     }
 
     private List<String> tokenize(String query, List<String> tokens, Map<String, Integer> keywordPositionMap) {
@@ -74,24 +130,32 @@ public class TStatement {
     }
 
 
-    public String handleTemporalize(List<String> tokens) {
+    public String handleTemporalize(List<String> tokens, Statement statement) throws SQLException {
         String tableName = tokens.get(1);
-        String tempTable = tableName + "_VT";
-        String tempQuery = "CREATE TABLE " + tempTable +
-                "(id integer primary key ,indx integer,updated_value varchar(10)," +
-                "prev_value varchar(10),VST timestamp,VET timestamp,id_id int);";
+        String tempTable = tableName + "_vt";
+        //check if vt table already exists
+        ResultSet resultSet = statement.executeQuery("show tables like '" + tempTable + "'");
+
+        String tempQuery = "desc " + tempTable;
+        if (!resultSet.next()) {
+            tempQuery = "CREATE TABLE " + tempTable +
+                    "(id integer AUTO_INCREMENT primary key ,indx integer,updated_value varchar(10)," +
+                    "prev_value varchar(10),VST timestamp,VET timestamp,id_id int);";
+        }
+
         return tempQuery;
     }
 
     public String handleInsert(String currQuery, List<String> tokens) {
         // currQuery --> "Insert into Student values ('Mike',1,'active','3.4','CSE')"
         // finding current time stamp
+        currQuery = currQuery.replace(TJdbc.TINSERT, "insert");
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         String lsst = timestamp.toString();
         //String lsst = "2011-01-01 00:00:02";
         String lset = "2037-01-19 03:14:07";
-        currQuery = currQuery.substring(0,currQuery.length()-1);
-        String addTimestamp =  ", '" + lsst + "', '" + lset + "');";
+        currQuery = currQuery.substring(0, currQuery.length() - 1);
+        String addTimestamp = ", '" + lsst + "', '" + lset + "');";
         currQuery = currQuery + addTimestamp;
         System.out.println(currQuery);
         return currQuery;
@@ -111,12 +175,14 @@ public class TStatement {
             else
                 query = query + s + " ";
         }
-        if (where == "")
-            query = query + "d join student_VT a on d.id = a.id_student  where (d.id,a.VST) in(select d.id,min(a.VST) from student d join student_VT a on d.id = a.id_student group by d.id);";
+        if ("".equals(where))
+            query = query + "d join student_vt a on d.id = a.id_id  " +
+                    "where (d.id,a.VST) in(select d.id,min(a.VST) from student d " +
+                    "join student_vt a on d.id = a.id_id group by d.id);";
         else
-            query = query + "d join student_VT a on d.id = a.id_student " + where + "order by a.VST limit 1;";
-//        select * from student d join student_VT a on d.id = a.id_student where name="ayush" order by a.VST limit 1;
-//      select * from student d join student_VT a on d.id = a.id_student  where (d.id,a.VST) in(select d.id,min(a.VST) from student d join student_VT a on d.id = a.id_student group by d.id);
+            query = query + "d join student_vt a on d.id = a.id_id " + where + "order by a.VST limit 1;";
+//        select * from student d join student_vt a on d.id = a.id_id where name="ayush" order by a.VST limit 1;
+//      select * from student d join student_vt a on d.id = a.id_id  where (d.id,a.VST) in(select d.id,min(a.VST) from student d join student_vt a on d.id = a.id_id group by d.id);
 
         return query;
     }
