@@ -23,7 +23,7 @@ public class TStatement {
         tokens = tokenize(query, tokens, keywordPositionMap);
 
         if (keywordPositionMap.containsKey(TJdbc.TEMPORALIZE)) {
-            query = handleTemporalize(tokens);
+            query = handleTemporalize(tokens, statement);
             System.out.println(query);
         } else if (keywordPositionMap.containsKey(TJdbc.FIRST)) {
             query = handlefirst(keywordPositionMap, tokens);
@@ -130,12 +130,19 @@ public class TStatement {
     }
 
 
-    public String handleTemporalize(List<String> tokens) {
+    public String handleTemporalize(List<String> tokens, Statement statement) throws SQLException {
         String tableName = tokens.get(1);
         String tempTable = tableName + "_vt";
-        String tempQuery = "CREATE TABLE " + tempTable +
-                "(id integer AUTO_INCREMENT primary key ,indx integer,updated_value varchar(10)," +
-                "prev_value varchar(10),VST timestamp,VET timestamp,id_id int);";
+        //check if vt table already exists
+        ResultSet resultSet = statement.executeQuery("show tables like '" + tempTable + "'");
+
+        String tempQuery = "desc " + tempTable;
+        if (!resultSet.next()) {
+            tempQuery = "CREATE TABLE " + tempTable +
+                    "(id integer AUTO_INCREMENT primary key ,indx integer,updated_value varchar(10)," +
+                    "prev_value varchar(10),VST timestamp,VET timestamp,id_id int);";
+        }
+
         return tempQuery;
     }
 
