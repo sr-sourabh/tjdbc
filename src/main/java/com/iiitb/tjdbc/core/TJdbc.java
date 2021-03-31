@@ -12,6 +12,7 @@ public class TJdbc {
     private final Set<String> keywords = new HashSet<>();
     public static final String LAST = "last";
     public static final String FIRST = "first";
+    public static final String INSERT = "insert";
     public static final String TEMPORALIZE = "temporalize";
 
     public TJdbc() {
@@ -22,6 +23,7 @@ public class TJdbc {
         keywords.add(LAST);
         keywords.add(FIRST);
         keywords.add(TEMPORALIZE);
+        keywords.add(INSERT);
     }
 
     public static Statement createStatement(Connection connection) throws SQLException {

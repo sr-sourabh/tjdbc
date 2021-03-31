@@ -20,8 +20,13 @@ tjdbc;
 
 create table student
 (
+    id   int primary key,
     name varchar(10),
-    id   int
+    status varchar(10),
+    gpa varchar(10),
+    major varchar(10),
+    LSST timestamp,
+    LSET timestamp
 );
 
 insert into student
