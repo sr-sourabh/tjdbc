@@ -50,7 +50,7 @@ public class TStatement {
     public String handleTemporalize(List<String> tokens){
         String tableName = tokens.get(1);
         String tempTable = tableName + "_VT";
-        String tempQuery = "CREATE TABLE " + tempTable + "(id integer ,indx integer,updated_value varchar(10),prev_value varchar(10),VST timestamp,VET timestamp);";
+        String tempQuery = "CREATE TABLE " + tempTable + "(id integer primary key ,indx integer,updated_value varchar(10),prev_value varchar(10),VST timestamp,VET timestamp,id_student int);";
         return tempQuery;
     }
 

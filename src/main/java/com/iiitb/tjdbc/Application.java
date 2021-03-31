@@ -28,7 +28,7 @@ public class Application {
     }
 
     private static void executeInsert(Statement statement) throws SQLException{
-        String query = "insert into student values ('Henry',6,'active','3.75','CSE')";
+        String query = "insert into student values (6,'Henry','active','3.75','CSE')";
         statement.executeUpdate(query);
     }
 
