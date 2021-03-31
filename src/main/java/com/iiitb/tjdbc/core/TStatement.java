@@ -68,7 +68,7 @@ public class TStatement {
         System.out.println(currQuery);
         return currQuery;
     }
-    public void handlefirst(Map<String, Integer> keywordPositionMap, List<String> tokens) {
+    public String handlefirst(Map<String, Integer> keywordPositionMap, List<String> tokens) {
         int i = 0;
         String query = "";
         String where = "";
