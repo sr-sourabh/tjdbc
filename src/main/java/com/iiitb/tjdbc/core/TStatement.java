@@ -64,12 +64,12 @@ public class TStatement {
             else
                 query = query + s + " ";
         }
-        if(where == "")
-            query= query +"d join audit a on d.domain_id = a.id_d  where (domain_id,a.starttime) in(select domain_id,min(a.starttime) from domain d join audit a on d.domain_id = a.id_d group by domain_id);";
+        if (where == "")
+            query = query + "d join student_VT a on d.id = a.id_student  where (d.id,a.VST) in(select d.id,min(a.VST) from student d join student_VT a on d.id = a.id_student group by d.id);";
         else
-            query = query + "d join audit a on d.domain_id = a.id_d " + where + "order by a.starttime limit 1;";
-//        select * from domain d join audit a on d.domain_id = a.id_d where name="ayush" order by a.starttime limit 1;
-//      select * from domain d join audit a on d.domain_id = a.id_d  where (domain_id,a.starttime) in(select domain_id,min(a.starttime) from domain d join audit a on d.domain_id = a.id_d group by domain_id);
+            query = query + "d join student_VT a on d.id = a.id_student " + where + "order by a.VST limit 1;";
+//        select * from student d join student_VT a on d.id = a.id_student where name="ayush" order by a.VST limit 1;
+//      select * from student d join student_VT a on d.id = a.id_student  where (d.id,a.VST) in(select d.id,min(a.VST) from student d join student_VT a on d.id = a.id_student group by d.id);
 
         return query;
     }

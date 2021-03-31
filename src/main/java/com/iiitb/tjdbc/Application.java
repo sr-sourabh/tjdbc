@@ -16,9 +16,10 @@ public class Application {
             Statement statement = TJdbc.createStatement(connection);
 
             //uncomment only the part you are working on
-            executeTemporalize(statement);
+            //executeTemporalize(statement);
+            //executeInsert(statement);
             //executeFirst(statement);
-            //exectuteLast(statement);
+            executeLast(statement);
             connection.close();
 
         } catch (Exception e) {
@@ -26,8 +27,13 @@ public class Application {
         }
     }
 
-    private static void exectuteLast(Statement statement) throws SQLException {
-        String query = "Select first * from domain";
+    private static void executeInsert(Statement statement) throws SQLException {
+        String query = "insert into student values (6,'Henry','active','3.75','CSE')";
+        statement.executeUpdate(query);
+    }
+
+    private static void executeLast(Statement statement) throws SQLException {
+        String query = "Select last * from student where name='ayush'";
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
@@ -36,7 +42,7 @@ public class Application {
     }
 
     private static void executeFirst(Statement statement) throws SQLException {
-        String query = "Select first * from domain";
+        String query = "Select first * from student";
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
@@ -45,7 +51,7 @@ public class Application {
     }
 
     private static void executeTemporalize(Statement statement) throws SQLException {
-        String query = "Select first * from domain";
+        String query = "Temporalize student";
         statement.executeUpdate(query);
     }
 }
