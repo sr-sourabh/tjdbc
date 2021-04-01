@@ -21,6 +21,7 @@ public class Application {
             //executeFirst(statement);
             //executeLast(statement);
             //executeTUpdate(statement);
+            executeTSelectOnDate(statement);
             connection.close();
 
         } catch (Exception e) {
@@ -59,5 +60,15 @@ public class Application {
     private static void executeTemporalize(Statement statement) throws SQLException {
         String query = "Temporalize student";
         statement.executeUpdate(query);
+    }
+
+    private static void executeTSelectOnDate(Statement statement) throws SQLException{
+        String query = "tselect gpa from student where id = 1 and date = '2019-01-12' ";
+        ResultSet resultset = statement.executeQuery(query);
+
+        while (resultset.next()) {
+            // can parse the results accordinly with user needs
+            System.out.println("Current results are : " + resultset.getString(3) + " for student id " + resultset.getInt(7));
+        }
     }
 }
