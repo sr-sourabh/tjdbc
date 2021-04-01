@@ -36,6 +36,12 @@ public class TStatement {
         } else if(keywordPositionMap.containsKey(TJdbc.TSELECT)){
             query = handleTSelect(query,tokens,keywordPositionMap,statement);
         }
+        else if(keywordPositionMap.containsKey(TJdbc.PREVIOUS)){
+            query = handlePrevious(keywordPositionMap, tokens, statement);
+        }
+        else if(keywordPositionMap.containsKey(TJdbc.NEXT)){
+            query = handleNext(keywordPositionMap, tokens , statement);
+        }
 
         return query;
     }
@@ -226,6 +232,41 @@ public class TStatement {
         }
         query = query + ";";
 
+        return query;
+    }
+    public String handlePrevious(Map<String, Integer> keywordPositionMap, List<String> tokens, Statement statement) throws SQLException {
+        String query = "";
+
+        String Value = tokens.get(2);
+
+        Map<String,Integer> columnNameIndexMap = getColumnNameIndexMap(tokens.get(5),statement);
+        int indx = columnNameIndexMap.get(tokens.get(3));
+        String id = tokens.get(7);
+
+        id = id.substring(0, id.length() - 1);
+
+        query = tokens.get(0)+ " id_id, prev_value,VST,VET from student_VT where id_"+id+" and indx="+indx+" and updated_value = "+"'"+Value+"'"+" ;";
+
+//        select previous Civil major from student where id=1;
+//        select id_id, prev_value,VST,VET from student_VT where id_id=1 and indx=4 and updated_value = "Civil";
+        return query;
+    }
+
+    public String handleNext(Map<String, Integer> keywordPositionMap, List<String> tokens,Statement statement) throws SQLException {
+        String query = "";
+
+        String Value = tokens.get(2);
+
+        Map<String,Integer> columnNameIndexMap = getColumnNameIndexMap(tokens.get(5),statement);
+        int indx = columnNameIndexMap.get(tokens.get(3));
+        String id = tokens.get(7);
+
+        id = id.substring(0, id.length() - 1);
+
+        query = tokens.get(0)+ " id_id, updated_value,VST,VET from student_VT where id_"+id+" and indx="+indx+" and prev_value = "+"'"+Value+"'"+" ;";
+
+//        select next CSE major from student where id=1;
+//        select id_id, updated_value,VST,VET from student_VT where id_id=1 and indx=4 and prev_value = "CSE";
         return query;
     }
 

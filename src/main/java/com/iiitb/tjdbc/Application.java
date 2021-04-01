@@ -21,7 +21,10 @@ public class Application {
             //executeFirst(statement);
             //executeLast(statement);
             //executeTUpdate(statement);
-            executeTSelectOnDate(statement);
+            //executeTSelectOnDate(statement);
+            executePrevious(statement);
+            //executeNext(statement);
+
             connection.close();
 
         } catch (Exception e) {
@@ -69,6 +72,24 @@ public class Application {
         while (resultset.next()) {
             // can parse the results accordinly with user needs
             System.out.println("Current results are : " + resultset.getString(3) + " for student id " + resultset.getInt(7));
+        }
+    }
+
+    private static void executePrevious(Statement statement) throws SQLException {
+        String query = "Select previous Civil major from student where id=1;";
+        ResultSet resultset = statement.executeQuery(query);
+
+        while (resultset.next()) {
+            System.out.println(resultset.getString(1) + " " + resultset.getInt(2));
+        }
+    }
+
+    private static void executeNext(Statement statement) throws SQLException {
+        String query = "Select next CSE major from student where id=1;";
+        ResultSet resultset = statement.executeQuery(query);
+
+        while (resultset.next()) {
+            System.out.println(resultset.getString(1) + " " + resultset.getInt(2));
         }
     }
 }
