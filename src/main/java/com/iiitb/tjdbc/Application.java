@@ -16,7 +16,7 @@ public class Application {
             Statement statement = TJdbc.createStatement(connection);
 
             //uncomment only the part you are working on
-            executeTemporalize(statement);
+            //executeTemporalize(statement);
             //executeInsert(statement);
             //executeFirst(statement);
             //executeLast(statement);
@@ -39,7 +39,7 @@ public class Application {
     }
 
     private static void executeLast(Statement statement) throws SQLException {
-        String query = "Select last salary from domain where name='ayush'";
+        String query = "Select last salary from student";
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
@@ -48,7 +48,7 @@ public class Application {
     }
 
     private static void executeFirst(Statement statement) throws SQLException {
-        String query = "Select first salary from domain where name='ayush'";
+        String query = "Select first salary from student";
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
@@ -57,7 +57,7 @@ public class Application {
     }
 
     private static void executeTemporalize(Statement statement) throws SQLException {
-        String query = "Temporalize ssss";
+        String query = "Temporalize student";
         statement.executeUpdate(query);
     }
 }
