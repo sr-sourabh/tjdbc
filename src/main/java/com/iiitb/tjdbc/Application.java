@@ -18,7 +18,7 @@ public class Application {
             //uncomment only the part you are working on
             //executeTemporalize(statement);
             //executeInsert(statement);
-            //executeFirst(statement);
+            executeFirst(statement);
             //executeLast(statement);
             //executeTUpdate(statement);
             //executeTSelectOnDate(statement);
