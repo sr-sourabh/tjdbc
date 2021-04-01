@@ -18,10 +18,10 @@ public class Application {
             //uncomment only the part you are working on
             //executeTemporalize(statement);
             //executeInsert(statement);
-            //executeFirst(statement);
+            executeFirst(statement);
             //executeLast(statement);
             //executeTUpdate(statement);
-            executeTSelectOnDate(statement);
+            // executeTSelectOnDate(statement);
             connection.close();
 
         } catch (Exception e) {
@@ -49,11 +49,11 @@ public class Application {
     }
 
     private static void executeFirst(Statement statement) throws SQLException {
-        String query = "Select first salary from student";
+        String query = "Select a.id, first gpa from student";
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
-            System.out.println(resultset.getString(1) + " " + resultset.getInt(2));
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3));
         }
     }
 
@@ -62,7 +62,7 @@ public class Application {
         statement.executeUpdate(query);
     }
 
-    private static void executeTSelectOnDate(Statement statement) throws SQLException{
+    private static void executeTSelectOnDate(Statement statement) throws SQLException {
         String query = "tselect gpa from student where id = 1 and date = '2019-01-12' ";
         ResultSet resultset = statement.executeQuery(query);
 

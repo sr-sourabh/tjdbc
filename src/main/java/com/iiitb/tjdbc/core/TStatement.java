@@ -12,6 +12,7 @@ public class TStatement {
     private TJdbc tJdbc;
 
     public String processQuery(String query, Object o) throws SQLException {
+        query = query.toLowerCase();
         System.out.println("Recieved query for processing: " + query);
 
         Statement statement = (Statement) o;
@@ -23,18 +24,18 @@ public class TStatement {
         tokens = tokenize(query, tokens, keywordPositionMap);
 
         if (keywordPositionMap.containsKey(TJdbc.TEMPORALIZE)) {
-            query = handleTemporalize(tokens,statement);
+            query = handleTemporalize(tokens, statement);
             System.out.println(query);
         } else if (keywordPositionMap.containsKey(TJdbc.FIRST)) {
-            query = handlefirst(keywordPositionMap, tokens);
+            query = handlefirst(keywordPositionMap, tokens, statement, query);
         } else if (keywordPositionMap.containsKey(TJdbc.LAST)) {
             query = handlelast(keywordPositionMap, tokens);
         } else if (keywordPositionMap.containsKey(TJdbc.TINSERT)) {
             query = handleInsert(query, tokens);
         } else if (keywordPositionMap.containsKey(TJdbc.TUPDATE)) {
             query = handleTUpdate(query, tokens, keywordPositionMap, statement);
-        } else if(keywordPositionMap.containsKey(TJdbc.TSELECT)){
-            query = handleTSelect(query,tokens,keywordPositionMap,statement);
+        } else if (keywordPositionMap.containsKey(TJdbc.TSELECT)) {
+            query = handleTSelect(query, tokens, keywordPositionMap, statement);
         }
 
         return query;
@@ -131,29 +132,29 @@ public class TStatement {
         return tokens;
     }
 
-    public String handleTSelect(String query,List<String> tokens,Map<String,Integer> keywordPositionMap,Statement statement) throws SQLException{
+    public String handleTSelect(String query, List<String> tokens, Map<String, Integer> keywordPositionMap, Statement statement) throws SQLException {
 
         // "tselect gpa from student where id=1 and date='2019-01-12' "
 
         String tableName = getToken(keywordPositionMap, tokens, TJdbc.TSELECT, 3);
-        Map<String,Integer> columnNameIndexMap = getColumnNameIndexMap(tableName,statement);
+        Map<String, Integer> columnNameIndexMap = getColumnNameIndexMap(tableName, statement);
         int indx = columnNameIndexMap.get(tokens.get(1));
         //
         String tableVT = tableName + "_vt";
         int idIndx = 0; // stores the index where the id resides
-        int dateIndx=0; // stores the index where the date resides
+        int dateIndx = 0; // stores the index where the date resides
         int n = tokens.size();
-        for(int i=0;i<tokens.size();i++){
-            if(tokens.get(i).equals("id")){
-                idIndx = i+2;
+        for (int i = 0; i < tokens.size(); i++) {
+            if (tokens.get(i).equals("id")) {
+                idIndx = i + 2;
             }
-            if(tokens.get(i).equals("date")){
-                dateIndx = i+2;
+            if (tokens.get(i).equals("date")) {
+                dateIndx = i + 2;
             }
         }
         String id_id = tokens.get(idIndx);
         String time = tokens.get(dateIndx);
-        String tempQuery = "select * from " + tableVT + " where indx = "+indx + " and id_id = "+ id_id +" and vst<= "+
+        String tempQuery = "select * from " + tableVT + " where indx = " + indx + " and id_id = " + id_id + " and vst<= " +
                 time + " and vet > " + time + " ;";
         query = tempQuery;
         return query;
@@ -191,30 +192,39 @@ public class TStatement {
         return currQuery;
     }
 
-    public String handlefirst(Map<String, Integer> keywordPositionMap, List<String> tokens) {
-        int i = 0;
-        String query = "";
-        String where = "";
-        for (String s : tokens) {
-            if (s.equals("first"))
-                continue;
-            if (s.equals("where"))
-                i = 1;
-            if (i == 1)
-                where = where + s + " ";
-            else
-                query = query + s + " ";
-        }
-        if ("".equals(where))
-            query = query + "d join student_vt a on d.id = a.id_id  " +
-                    "where (d.id,a.VST) in(select d.id,min(a.VST) from student d " +
-                    "join student_vt a on d.id = a.id_id group by d.id);";
-        else
-            query = query + "d join student_vt a on d.id = a.id_id " + where + "order by a.VST limit 1;";
-//        select * from student d join student_vt a on d.id = a.id_id where name="ayush" order by a.VST limit 1;
-//      select * from student d join student_vt a on d.id = a.id_id  where (d.id,a.VST) in(select d.id,min(a.VST) from student d join student_vt a on d.id = a.id_id group by d.id);
+    public String handlefirst(Map<String, Integer> keywordPositionMap, List<String> tokens, Statement statement, String query) throws SQLException {
+        String tableName = getToken(keywordPositionMap, tokens, TJdbc.FROM, 1);
+        tokens.remove(keywordPositionMap.getOrDefault(TJdbc.FIRST, 0).intValue());
+        String tableVt = tableName + "_vt";
 
-        return query;
+        int i = 0;
+        String newQuery = "";
+        while (i < tokens.size() && !tokens.get(i).equals("where")) {
+            if (tokens.get(i).equals("from")) {
+                newQuery += ", prev_value ";
+            }
+            newQuery += tokens.get(i++) + " ";
+        }
+        //where is present
+        if (i < tokens.size()) {
+            newQuery += "d join " + tableVt + " a on d.id = a.id_id ";
+            while (i < tokens.size()) {
+                newQuery += tokens.get(i++) + " ";
+            }
+            newQuery += " and (d.id,a.VST) in(select d.id,min(a.VST) from " + tableName +
+                    " d join " + tableVt + " a on d.id = a.id_id group by d.id)";
+        }
+        //where is not present
+        else {
+            newQuery += "d join " + tableVt + " a on d.id = a.id_id ";
+            newQuery += " where (d.id,a.VST) in(select d.id,min(a.VST) from " + tableName +
+                    " d join " + tableVt + " a on d.id = a.id_id group by d.id)";
+        }
+
+        //select * from student d join student_vt a on d.id = a.id_id  where (d.id,a.VST) in
+        // (select d.id,min(a.VST) from student d join student_vt a on d.id = a.id_id group by d.id);
+
+        return newQuery;
     }
 
     public String handlelast(Map<String, Integer> keywordPositionMap, List<String> tokens) {
