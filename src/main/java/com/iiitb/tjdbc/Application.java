@@ -18,12 +18,12 @@ public class Application {
             //uncomment only the part you are working on
             //executeTemporalize(statement);
             //executeInsert(statement);
-            executeFirst(statement);
+            //executeFirst(statement);
             //executeLast(statement);
             //executeTUpdate(statement);
             //executeTSelectOnDate(statement);
-            executePrevious(statement);
-            //executeNext(statement);
+            //executePrevious(statement);
+            executeNext(statement);
 
             connection.close();
 
@@ -76,11 +76,11 @@ public class Application {
     }
 
     private static void executePrevious(Statement statement) throws SQLException {
-        String query = "Select previous Civil major from student where id=1;";
+        String query = "Select previous civil major from student where id=1;";
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
-            System.out.println(resultset.getString(1) + " " + resultset.getInt(2));
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2)+ " " + resultset.getString(3)+ " " + resultset.getString(4));
         }
     }
 
@@ -89,7 +89,7 @@ public class Application {
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
-            System.out.println(resultset.getString(1) + " " + resultset.getInt(2));
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2)+ " " + resultset.getString(3)+ " " + resultset.getString(4));
         }
     }
 }

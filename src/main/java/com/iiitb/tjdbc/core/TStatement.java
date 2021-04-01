@@ -246,7 +246,8 @@ public class TStatement {
     }
     public String handlePrevious(Map<String, Integer> keywordPositionMap, List<String> tokens, Statement statement) throws SQLException {
         String query = "";
-
+        String tableName = tokens.get(5);;
+        String tableName_VT = tableName + "_VT";
         String Value = tokens.get(2);
 
         Map<String,Integer> columnNameIndexMap = getColumnNameIndexMap(tokens.get(5),statement);
@@ -255,7 +256,8 @@ public class TStatement {
 
         id = id.substring(0, id.length() - 1);
 
-        query = tokens.get(0)+ " id_id, prev_value,VST,VET from student_VT where id_"+id+" and indx="+indx+" and updated_value = "+"'"+Value+"'"+" ;";
+        query = tokens.get(0)+ " id_id, prev_value,VST,VET from "+tableName_VT+" where id_"+id+
+                " and indx="+indx+" and updated_value = "+"'"+Value+"'"+" ;";
 
 //        select previous Civil major from student where id=1;
 //        select id_id, prev_value,VST,VET from student_VT where id_id=1 and indx=4 and updated_value = "Civil";
@@ -264,6 +266,8 @@ public class TStatement {
 
     public String handleNext(Map<String, Integer> keywordPositionMap, List<String> tokens,Statement statement) throws SQLException {
         String query = "";
+        String tableName = tokens.get(5);;
+        String tableName_VT = tableName + "_VT";
 
         String Value = tokens.get(2);
 
@@ -273,7 +277,8 @@ public class TStatement {
 
         id = id.substring(0, id.length() - 1);
 
-        query = tokens.get(0)+ " id_id, updated_value,VST,VET from student_VT where id_"+id+" and indx="+indx+" and prev_value = "+"'"+Value+"'"+" ;";
+        query = tokens.get(0)+ " id_id, updated_value,VST,VET from "+tableName_VT+" where id_"+id+
+                " and indx="+indx+" and prev_value = "+"'"+Value+"'"+" ;";
 
 //        select next CSE major from student where id=1;
 //        select id_id, updated_value,VST,VET from student_VT where id_id=1 and indx=4 and prev_value = "CSE";
