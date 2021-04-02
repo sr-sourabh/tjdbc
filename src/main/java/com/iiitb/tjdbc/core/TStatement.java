@@ -36,12 +36,10 @@ public class TStatement {
             query = handleTUpdate(query, tokens, keywordPositionMap, statement);
         } else if (keywordPositionMap.containsKey(TJdbc.TSELECT)) {
             query = handleTSelect(query, tokens, keywordPositionMap, statement);
-        }
-        else if(keywordPositionMap.containsKey(TJdbc.PREVIOUS)){
+        } else if (keywordPositionMap.containsKey(TJdbc.PREVIOUS)) {
             query = handlePrevious(keywordPositionMap, tokens, statement);
-        }
-        else if(keywordPositionMap.containsKey(TJdbc.NEXT)){
-            query = handleNext(keywordPositionMap, tokens , statement);
+        } else if (keywordPositionMap.containsKey(TJdbc.NEXT)) {
+            query = handleNext(keywordPositionMap, tokens, statement);
         }
 
         return query;
@@ -200,6 +198,8 @@ public class TStatement {
 
     public String handlefirst(Map<String, Integer> keywordPositionMap, List<String> tokens, Statement statement, String query) throws SQLException {
         String tableName = getToken(keywordPositionMap, tokens, TJdbc.FROM, 1);
+        Map<String, Integer> columnNameIndexMap = getColumnNameIndexMap(tableName, statement);
+        int indx = columnNameIndexMap.get(getToken(keywordPositionMap, tokens, TJdbc.FIRST, 1));
         tokens.remove(keywordPositionMap.getOrDefault(TJdbc.FIRST, 0).intValue());
         String tableVt = tableName + "_vt";
 
@@ -217,18 +217,19 @@ public class TStatement {
             while (i < tokens.size()) {
                 newQuery += tokens.get(i++) + " ";
             }
-            newQuery += " and (d.id,a.VST) in(select d.id,min(a.VST) from " + tableName +
-                    " d join " + tableVt + " a on d.id = a.id_id group by d.id)";
+            newQuery += " and (d.id,a.VST) in(select d.id, min(a.VST) from " + tableName +
+                    " d join " + tableVt + " a on d.id = a.id_id and indx = " + indx + " group by d.id) and indx = " + indx;
         }
         //where is not present
         else {
             newQuery += "d join " + tableVt + " a on d.id = a.id_id ";
-            newQuery += " where (d.id,a.VST) in(select d.id,min(a.VST) from " + tableName +
-                    " d join " + tableVt + " a on d.id = a.id_id group by d.id)";
+            newQuery += " where (d.id,a.VST) in(select d.id, min(a.VST) from " + tableName +
+                    " d join " + tableVt + " a on d.id = a.id_id and indx = " + indx + " group by d.id) and indx = " + indx;
         }
 
-        //select * from student d join student_vt a on d.id = a.id_id  where (d.id,a.VST) in
-        // (select d.id,min(a.VST) from student d join student_vt a on d.id = a.id_id group by d.id);
+        //select d.id, gpa , prev_value from student d join student_vt a on d.id = a.id_id
+        // where (d.id,a.VST) in(select d.id,min(a.VST) from student d join student_vt a
+        // on d.id = a.id_id and indx = 3 group by d.id, indx) and indx = 3;
 
         return newQuery;
     }
@@ -244,41 +245,44 @@ public class TStatement {
 
         return query;
     }
+
     public String handlePrevious(Map<String, Integer> keywordPositionMap, List<String> tokens, Statement statement) throws SQLException {
         String query = "";
-        String tableName = tokens.get(5);;
+        String tableName = tokens.get(5);
+        ;
         String tableName_VT = tableName + "_VT";
         String Value = tokens.get(2);
 
-        Map<String,Integer> columnNameIndexMap = getColumnNameIndexMap(tokens.get(5),statement);
+        Map<String, Integer> columnNameIndexMap = getColumnNameIndexMap(tokens.get(5), statement);
         int indx = columnNameIndexMap.get(tokens.get(3));
         String id = tokens.get(7);
 
         id = id.substring(0, id.length() - 1);
 
-        query = tokens.get(0)+ " id_id, prev_value,VST,VET from "+tableName_VT+" where id_"+id+
-                " and indx="+indx+" and updated_value = "+"'"+Value+"'"+" ;";
+        query = tokens.get(0) + " id_id, prev_value,VST,VET from " + tableName_VT + " where id_" + id +
+                " and indx=" + indx + " and updated_value = " + "'" + Value + "'" + " ;";
 
 //        select previous Civil major from student where id=1;
 //        select id_id, prev_value,VST,VET from student_VT where id_id=1 and indx=4 and updated_value = "Civil";
         return query;
     }
 
-    public String handleNext(Map<String, Integer> keywordPositionMap, List<String> tokens,Statement statement) throws SQLException {
+    public String handleNext(Map<String, Integer> keywordPositionMap, List<String> tokens, Statement statement) throws SQLException {
         String query = "";
-        String tableName = tokens.get(5);;
+        String tableName = tokens.get(5);
+        ;
         String tableName_VT = tableName + "_VT";
 
         String Value = tokens.get(2);
 
-        Map<String,Integer> columnNameIndexMap = getColumnNameIndexMap(tokens.get(5),statement);
+        Map<String, Integer> columnNameIndexMap = getColumnNameIndexMap(tokens.get(5), statement);
         int indx = columnNameIndexMap.get(tokens.get(3));
         String id = tokens.get(7);
 
         id = id.substring(0, id.length() - 1);
 
-        query = tokens.get(0)+ " id_id, updated_value,VST,VET from "+tableName_VT+" where id_"+id+
-                " and indx="+indx+" and prev_value = "+"'"+Value+"'"+" ;";
+        query = tokens.get(0) + " id_id, updated_value,VST,VET from " + tableName_VT + " where id_" + id +
+                " and indx=" + indx + " and prev_value = " + "'" + Value + "'" + " ;";
 
 //        select next CSE major from student where id=1;
 //        select id_id, updated_value,VST,VET from student_VT where id_id=1 and indx=4 and prev_value = "CSE";

@@ -65,9 +65,9 @@ insert into student_vt(indx, updated_value, prev_value, vst, id_id)
 values (1, 'Mike', 'amit', '2019-01-23', 1);
 --status change
 insert into student_vt(indx, updated_value, prev_value, vst, vet, id_id)
-values (3, 'inactive', 'processing', '2017-02-21', '2018-03-27', 1);
+values (2, 'inactive', 'processing', '2017-02-21', '2018-03-27', 1);
 insert into student_vt(indx, updated_value, prev_value, vst, id_id)
-values (3, 'active', 'inactive', '2018-03-27', 1);
+values (2, 'active', 'inactive', '2018-03-27', 1);
 
 --student 2
 --gpa change
