@@ -250,8 +250,8 @@ public class TStatement {
         String query = "";
         String tableName = tokens.get(5);
         ;
-        String tableName_VT = tableName + "_VT";
-        String Value = tokens.get(2);
+        String tableVt = tableName + "_vt";
+        String value = tokens.get(2);
 
         Map<String, Integer> columnNameIndexMap = getColumnNameIndexMap(tokens.get(5), statement);
         int indx = columnNameIndexMap.get(tokens.get(3));
@@ -259,8 +259,8 @@ public class TStatement {
 
         id = id.substring(0, id.length() - 1);
 
-        query = tokens.get(0) + " id_id, prev_value,VST,VET from " + tableName_VT + " where id_" + id +
-                " and indx=" + indx + " and updated_value = " + "'" + Value + "'" + " ;";
+        query = tokens.get(0) + " id_id, prev_value, vst, vet from " + tableVt + " where id_" + id +
+                " and indx=" + indx + " and updated_value = " + "'" + value + "'" + " ;";
 
 //        select previous Civil major from student where id=1;
 //        select id_id, prev_value,VST,VET from student_VT where id_id=1 and indx=4 and updated_value = "Civil";
@@ -271,9 +271,9 @@ public class TStatement {
         String query = "";
         String tableName = tokens.get(5);
         ;
-        String tableName_VT = tableName + "_VT";
+        String tableVt = tableName + "_vt";
 
-        String Value = tokens.get(2);
+        String value = tokens.get(2);
 
         Map<String, Integer> columnNameIndexMap = getColumnNameIndexMap(tokens.get(5), statement);
         int indx = columnNameIndexMap.get(tokens.get(3));
@@ -281,8 +281,8 @@ public class TStatement {
 
         id = id.substring(0, id.length() - 1);
 
-        query = tokens.get(0) + " id_id, updated_value,VST,VET from " + tableName_VT + " where id_" + id +
-                " and indx=" + indx + " and prev_value = " + "'" + Value + "'" + " ;";
+        query = tokens.get(0) + " id_id, updated_value, vst, vet from " + tableVt + " where id_" + id +
+                " and indx=" + indx + " and prev_value = " + "'" + value + "'" + " ;";
 
 //        select next CSE major from student where id=1;
 //        select id_id, updated_value,VST,VET from student_VT where id_id=1 and indx=4 and prev_value = "CSE";
