@@ -18,12 +18,12 @@ public class Application {
             //uncomment only the part you are working on
             //executeTemporalize(statement);
             //executeInsert(statement);
-            //executeFirst(statement);
+            executeFirst(statement);
             //executeLast(statement);
             //executeTUpdate(statement);
             //executeTSelectOnDate(statement);
             //executePrevious(statement);
-            executeNext(statement);
+            //executeNext(statement);
 
             connection.close();
 
@@ -52,7 +52,7 @@ public class Application {
     }
 
     private static void executeFirst(Statement statement) throws SQLException {
-        String query = "Select a.id, first gpa from student";
+        String query = "Select d.id, first gpa from student where d.id <> 1";
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
@@ -80,7 +80,7 @@ public class Application {
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
-            System.out.println(resultset.getString(1) + " " + resultset.getString(2)+ " " + resultset.getString(3)+ " " + resultset.getString(4));
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) + " " + resultset.getString(4));
         }
     }
 
@@ -89,7 +89,7 @@ public class Application {
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
-            System.out.println(resultset.getString(1) + " " + resultset.getString(2)+ " " + resultset.getString(3)+ " " + resultset.getString(4));
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) + " " + resultset.getString(4));
         }
     }
 }
