@@ -23,7 +23,8 @@ public class Application {
             //executeTUpdate(statement);
             //executeTSelectOnDate(statement);
             //executePrevious(statement);
-            executeNext(statement);
+            //executeNext(statement);
+            executeTjoin(statement);
 
             connection.close();
 
@@ -90,6 +91,15 @@ public class Application {
 
         while (resultset.next()) {
             System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) + " " + resultset.getString(4));
+        }
+    }
+
+    private static void executeTjoin(Statement statement) throws SQLException {
+        String query = "tselect employee e tjoin manager m on e.d_id=m.d_id;";
+        ResultSet resultset = statement.executeQuery(query);
+
+        while (resultset.next()) {
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3));
         }
     }
 }
