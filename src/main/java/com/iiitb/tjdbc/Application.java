@@ -33,7 +33,7 @@ public class Application {
     }
 
     private static void executeTUpdate(Statement statement) throws SQLException {
-        String query = "tupdate student set gpa = 8.2 where id = 1 ";
+        String query = "tupdate student set gpa = 10.2 where id = 1 ";
         statement.executeUpdate(query);
     }
 
