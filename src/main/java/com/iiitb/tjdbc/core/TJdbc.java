@@ -20,6 +20,7 @@ public class TJdbc {
     public static final String TSELECT = "tselect";
     public static final String PREVIOUS = "previous";
     public static final String NEXT = "next";
+    public static final String TJOIN = "tjoin";
 
     public TJdbc() {
         populateKeyWords();
@@ -36,6 +37,7 @@ public class TJdbc {
         keywords.add(TSELECT);
         keywords.add(PREVIOUS);
         keywords.add(NEXT);
+        keywords.add(TJOIN);
     }
 
     public static Statement createStatement(Connection connection) throws SQLException {
