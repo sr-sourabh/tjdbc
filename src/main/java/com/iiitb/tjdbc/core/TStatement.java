@@ -294,27 +294,32 @@ public class TStatement {
 
     private String handleTjoin(Map<String, Integer> keywordPositionMap, List<String> tokens, Statement statement) {
         String query = "";
-        String table1 = tokens.get(1) + "_vt";
+        String table1 = tokens.get(1);
+        String table1_vt = table1+"_vt";
         String e = tokens.get(2);
-        String table2 = tokens.get(4) + "_vt";
+        String table2 = tokens.get(4) ;
+        String table2_vt = table2+"_vt";
         String m = tokens.get(5);
-        String f = (tokens.get(7));
-        f = f.substring(1);
-        String l = (tokens.get(9));
-        l = l.substring(1);
+        String f1 = (tokens.get(7));
+        String f = f1.substring(1);
+        String l1 = (tokens.get(9));
+        String l = l1.substring(1);
 
 
-        query = "select " + m + ".* , " + e + ".* , (case when " + m + ".startdate > " + e + ".startdate then " + m + ".startdate else " + e + ".startdate end) " +
-                "as finalstartdate, (case when " + m + ".enddate < " + e + ".enddate then " + m + ".enddate else " + e + ".enddate end) as finalenddate" +
-                " from " + table2 + " " + m + " join " + table1 + " " + e + " on " + e + "" + f + " = " + m + "" + l + " and ((" + m + ".startdate between " + e + ".startdate and " + e + ".enddate)" +
-                " or (" + e + ".startdate between " + m + ".startdate and " + m + ".enddate)) order by " + e + ".e_id;";
-//        user query
-//        tselect employee e tjoin manager m on e.did = m.did ;
+        query = "select m.id_id as department_id,m.updated_value as m_id, e.id_id as employee_id," +
+                " e.updated_value as department_id," +
+                " (case when m.vst > e.vst then m.vst else e.vst end) as finalstartdate," +
+                " (case when m.vet < e.vet then m.vet else e.vet end) as finalenddate" +
+                " from department_vt m join employee_vt e on e.updated_value = m.id_id" +
+                " and ((m.vst between e.vst and e.vet) or (e.vst between m.vst and m.vet)) ;";
+
+        //        user query
+//        tselect employee e tjoin department m on e.did = m.did ;
 
 //        modified query
-//        select m.* , e.* , (case when m.startdate > e.startdate then m.startdate else e.startdate end) as finalstartdate,
-//        (case when m.enddate < e.enddate then m.enddate else e.enddate end) as finalenddate from manager_vt m join employee_vt e on e.d_id = m.d_id
-//        and ((m.startdate between e.startdate and e.enddate) or (e.startdate between m.startdate and m.enddate)) order by e.e_id;
+//        select m.id_id as department_id,m.updated_value as m_id, e.id_id as employee_id, e.updated_value as department_id, (case when m.vst > e.vst then m.vst else e.vst end) as finalstartdate,
+//        (case when m.vet < e.vet then m.vet else e.vet end) as finalenddate from department_vt m join employee_vt e on e.updated_value = m.id_id
+//        and ((m.vst between e.vst and e.vet) or (e.vst between m.vst and m.vet)) ;
 
         return query;
     }

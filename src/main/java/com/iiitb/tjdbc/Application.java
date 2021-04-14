@@ -95,7 +95,7 @@ public class Application {
     }
 
     private static void executeTjoin(Statement statement) throws SQLException {
-        String query = "tselect employee e tjoin manager m on e.d_id = m.d_id ;";
+        String query = "tselect employee e tjoin department m on e.d_id = m.d_id ;";
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
