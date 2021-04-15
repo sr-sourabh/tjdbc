@@ -1,11 +1,14 @@
 package com.iiitb.tjdbc.core;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
+import com.mysql.cj.jdbc.StatementWrapper;
+
+import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.iiitb.tjdbc.util.CommonUtils.getUrl;
+import static com.iiitb.tjdbc.util.ConnectionDetails.PASSWORD;
+import static com.iiitb.tjdbc.util.ConnectionDetails.USER;
 
 public class TStatement {
 
@@ -43,6 +46,9 @@ public class TStatement {
         }
         else if (keywordPositionMap.containsKey(TJdbc.EVOLUTION_HISTORY)){
             query=handle_evolution_history(keywordPositionMap,tokens,statement);
+        }
+        else if (keywordPositionMap.containsKey(TJdbc.TDELETE)){
+            query=handleTDelete(query,tokens,keywordPositionMap,statement);
         }
 
         return query;
@@ -326,6 +332,48 @@ public class TStatement {
 //        select next CSE major from student where id=1;
 //        select id_id, updated_value,VST,VET from student_VT where id_id=1 and indx=4 and prev_value = "CSE";
         return query;
+    }
+    private String handleTDelete(String query, List<String> tokens, Map<String, Integer> keywordPositionMap, Statement statement) throws SQLException {
+        String tableName = getToken(keywordPositionMap, tokens, TJdbc.FROM, 1);
+        Map<String, Integer> columnNameIndexMap = getColumnNameIndexMap(tableName, statement);
+        query = query.replace(TJdbc.TDELETE, "delete");
+        String pureDeleteQuery = query;
+        System.out.println(pureDeleteQuery);
+        String tableVt = tableName + "_vt";
+//        query=query.replace(tableName, tableName+" s");
+        int i=0;
+        String where="";
+        query ="delete ";
+        for (String s : tokens) {
+            if (s.equals("tdelete"))
+                continue;
+            if (s.equals("where"))
+                i = 1;
+            if (i == 1)
+                if(s.equals(";")) continue;
+                else
+                    where = where + s + " ";
+                query = query + s + " ";
+        }
+        query=query+";";
+        pureDeleteQuery=query;
+        String idtoupdatequery="select svt.id from "+tableVt+" svt, "+tableName+" s "+where+" and s.id=svt.id_id and svt.vet is NULL ;";
+        Connection connection = DriverManager.getConnection(getUrl(), USER, PASSWORD);
+        Statement statement2 = TJdbc.createStatement(connection);
+        ResultSet resultSet=statement2.executeQuery(idtoupdatequery);
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        String vet = timestamp.toString();
+        int idToUpdateDate;
+        while (resultSet.next()) {
+             String idtoupdate = resultSet.getString("id");
+//            String idtoupdate=String.valueOf(idToUpdateDate);
+            String updateDateQuery = "update "+tableVt+" SET vet= '" + timestamp + "' where id= "+idtoupdate+ " ;";
+            statement.executeUpdate(updateDateQuery);
+        }
+//        String updatequery="update "+tableVt+" SET vet= '" + timestamp + "' where id= ( select svt.id from "+tableVt+" svt, "+tableName+" s "+where+" and s.id=svt.id_id and svt.vet is NULL);";
+//        statement.executeUpdate(updatequery);
+        statement.executeUpdate(pureDeleteQuery);
+        return pureDeleteQuery;
     }
 
 }
