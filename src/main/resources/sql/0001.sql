@@ -91,3 +91,6 @@ insert into student_vt(indx, updated_value, prev_value, vst, vet, id_id)
 values (3, '2.9', '1.9', '2018-03-27', '2019-01-03', 3);
 insert into student_vt(indx, updated_value, prev_value, vst, id_id)
 values (3, '3.9', '2.9', '2019-01-03', 3);
+
+
+

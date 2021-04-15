@@ -34,16 +34,19 @@ public class TStatement {
             query = handleInsert(query, tokens);
         } else if (keywordPositionMap.containsKey(TJdbc.TUPDATE)) {
             query = handleTUpdate(query, tokens, keywordPositionMap, statement);
-        } else if (keywordPositionMap.containsKey(TJdbc.TSELECT)) {
-            query = handleTSelect(query, tokens, keywordPositionMap, statement);
         } else if (keywordPositionMap.containsKey(TJdbc.PREVIOUS)) {
             query = handlePrevious(keywordPositionMap, tokens, statement);
         } else if (keywordPositionMap.containsKey(TJdbc.NEXT)) {
             query = handleNext(keywordPositionMap, tokens, statement);
+        } else if (keywordPositionMap.containsKey(TJdbc.TJOIN)) {
+            query = handleTjoin(keywordPositionMap, tokens, statement);
+        } else if (keywordPositionMap.containsKey(TJdbc.TSELECT)) {
+            query = handleTSelect(query, tokens, keywordPositionMap, statement);
         }
 
         return query;
     }
+
 
     private String handleTUpdate(String query, List<String> tokens, Map<String, Integer> keywordPositionMap, Statement statement) throws SQLException {
         String tableName = getToken(keywordPositionMap, tokens, TJdbc.TUPDATE, 1);
@@ -289,4 +292,43 @@ public class TStatement {
         return query;
     }
 
+    private String handleTjoin(Map<String, Integer> keywordPositionMap, List<String> tokens, Statement statement) {
+        String query = "";
+        String table1 = tokens.get(1);
+        String table1_vt = table1 + "_vt";
+        String e = tokens.get(2);
+        String table2 = tokens.get(4);
+        String table2_vt = table2 + "_vt";
+        String m = tokens.get(5);
+        String f1 = (tokens.get(7));
+        String f = f1.substring(1);
+        String l1 = (tokens.get(9));
+        String l = l1.substring(1);
+
+        String where = "";
+        if (tokens.get(10).equals("where")) {
+            where = "where " + m + ".id_id = " + tokens.get(13);
+        }
+
+        query = "select " + m + ".id_id as " + table2 + "_id," + m + ".updated_value as m_id, " + e + ".id_id as " + table1 + "_id," +
+                " " + e + ".updated_value as " + table2 + "_id," +
+                " (case when " + m + ".vst > " + e + ".vst then " + m + ".vst else " + e + ".vst end) as finalstartdate," +
+                " (case when " + m + ".vet < " + e + ".vet then " + m + ".vet else " + e + ".vet end) as finalenddate" +
+                " from " + table2_vt + " " + m + " join " + table1_vt + " " + e + " on " + e + ".updated_value = " + m + ".id_id" +
+                " and ((" + m + ".vst between " + e + ".vst and " + e + ".vet) or (" + e + ".vst between " + m + ".vst and " + m + ".vet)) " + where + ";";
+
+//        user query
+//        tselect employee e tjoin department m on e.did = m.did ;
+//        or
+//        tselect employee e tjoin department m on e.d_id = m.d_id where m.d_id = 1;
+
+
+//        modified query
+//        select m.id_id as department_id,m.updated_value as m_id, e.id_id as employee_id, e.updated_value as department_id, (case when m.vst > e.vst then m.vst else e.vst end) as finalstartdate,
+//        (case when m.vet < e.vet then m.vet else e.vet end) as finalenddate from department_vt m join employee_vt e on e.updated_value = m.id_id
+//        and ((m.vst between e.vst and e.vet) or (e.vst between m.vst and m.vet)) ;
+
+        return query;
+    }
 }
+
