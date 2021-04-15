@@ -198,5 +198,41 @@ public class TStatement {
 
         return query;
     }
+    public String handle_evolution_history(Map<String, Integer> keywordPositionMap, List<String> tokens)
+    {
+        int i = 0,j=1;
+        String query = "";
+        String where = "";
+        String tableName = getToken(keywordPositionMap, tokens, TJdbc.FROM, 1);
+        String tableVt = tableName + "_vt";
+        Map<String, Integer> columnNameIndexMap = getColumnNameIndexMap(tableName, statement);
+        int indx = columnNameIndexMap.get(getToken(keywordPositionMap, tokens, TJdbc.EVOLUTION_HISTORY, 1));
+        for (String s : tokens) {
+            if (s.equals("evolution_history"))
+            {
+                continue;
+                j=1;
+            }
+            if(j==1) {
+                query=query+"svt.prev_value as value, svt.vst as starting_time, svt.vet as ending_time";
+                j++;
+                continue;
+            }
+            if (s.equals("where"))
+                i = 1;
+            if (i == 1)
+                where = where + s + " ";
+            else
+                query = query + s + " ";
+        }
+        if ("".equals(where))
+            query = query + "s join "+tableVt+" svt on s.id=svt.id_id where svt.indx="+indx+"order by svt.vst;";
+        else
+            query = query + "s join "+tableVt+" svt on s.id=svt.id_id"+where+" svt.indx="+indx+"order by svt.vst;";
+//        select * from student d join student_vt a on d.id = a.id_id where name="ayush" order by a.VST limit 1;
+//      select * from student d join student_vt a on d.id = a.id_id  where (d.id,a.VST) in(select d.id,min(a.VST) from student d join student_vt a on d.id = a.id_id group by d.id);
+
+        return query;
+    }
 
 }
