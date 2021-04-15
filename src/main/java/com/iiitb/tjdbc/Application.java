@@ -16,11 +16,15 @@ public class Application {
             Statement statement = TJdbc.createStatement(connection);
 
             //uncomment only the part you are working on
-            executeTemporalize(statement);
+            //executeTemporalize(statement);
             //executeInsert(statement);
             //executeFirst(statement);
             //executeLast(statement);
             //executeTUpdate(statement);
+            //executeTSelectOnDate(statement);
+            //executePrevious(statement);
+            executeNext(statement);
+
             connection.close();
 
         } catch (Exception e) {
@@ -29,7 +33,7 @@ public class Application {
     }
 
     private static void executeTUpdate(Statement statement) throws SQLException {
-        String query = "tupdate student set gpa = 8.2 where id = 1 ";
+        String query = "tupdate student set gpa = 10.2 where id = 1 ";
         statement.executeUpdate(query);
     }
 
@@ -39,25 +43,53 @@ public class Application {
     }
 
     private static void executeLast(Statement statement) throws SQLException {
-        String query = "Select last salary from domain where name='ayush'";
+        String query = "Select last id, gpa from student";
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
-            System.out.println(resultset.getString(1) + " " + resultset.getInt(2));
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2));
         }
     }
 
     private static void executeFirst(Statement statement) throws SQLException {
-        String query = "Select first salary from domain where name='ayush'";
+        String query = "Select d.id, first gpa from student where d.id <> 1";
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
-            System.out.println(resultset.getString(1) + " " + resultset.getInt(2));
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3));
         }
     }
 
     private static void executeTemporalize(Statement statement) throws SQLException {
-        String query = "Temporalize ssss";
+        String query = "Temporalize student";
         statement.executeUpdate(query);
+    }
+
+    private static void executeTSelectOnDate(Statement statement) throws SQLException {
+        String query = "tselect gpa from student where id = 1 and date = '2019-01-21' ";
+        ResultSet resultset = statement.executeQuery(query);
+
+        while (resultset.next()) {
+            // can parse the results accordinly with user needs
+            System.out.println("Current results are : " + resultset.getString(3) + " for student id " + resultset.getInt(7));
+        }
+    }
+
+    private static void executePrevious(Statement statement) throws SQLException {
+        String query = "Select previous veeru name from student where id=1;";
+        ResultSet resultset = statement.executeQuery(query);
+
+        while (resultset.next()) {
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) + " " + resultset.getString(4));
+        }
+    }
+
+    private static void executeNext(Statement statement) throws SQLException {
+        String query = "Select next veeru name from student where id=1;";
+        ResultSet resultset = statement.executeQuery(query);
+
+        while (resultset.next()) {
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) + " " + resultset.getString(4));
+        }
     }
 }

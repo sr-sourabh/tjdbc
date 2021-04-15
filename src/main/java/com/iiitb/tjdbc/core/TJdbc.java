@@ -17,6 +17,9 @@ public class TJdbc {
     public static final String TUPDATE = "tupdate";
     public static final String FROM = "from";
     public static final String SET = "set";
+    public static final String TSELECT = "tselect";
+    public static final String PREVIOUS = "previous";
+    public static final String NEXT = "next";
 
     public TJdbc() {
         populateKeyWords();
@@ -30,6 +33,9 @@ public class TJdbc {
         keywords.add(TUPDATE);
         keywords.add(FROM);
         keywords.add(SET);
+        keywords.add(TSELECT);
+        keywords.add(PREVIOUS);
+        keywords.add(NEXT);
     }
 
     public static Statement createStatement(Connection connection) throws SQLException {
