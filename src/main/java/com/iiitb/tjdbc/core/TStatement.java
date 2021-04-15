@@ -41,6 +41,9 @@ public class TStatement {
         } else if (keywordPositionMap.containsKey(TJdbc.NEXT)) {
             query = handleNext(keywordPositionMap, tokens, statement);
         }
+        else if (keywordPositionMap.containsKey(TJdbc.EVOLUTION_HISTORY)){
+            query=handle_evolution_history(keywordPositionMap,tokens,statement);
+        }
 
         return query;
     }
@@ -245,9 +248,9 @@ public class TStatement {
 
         return query;
     }
-    public String handle_evolution_history(Map<String, Integer> keywordPositionMap, List<String> tokens)
+    public String handle_evolution_history(Map<String, Integer> keywordPositionMap, List<String> tokens,Statement statement) throws SQLException
     {
-        int i = 0,j=1;
+        int i = 0,j=0;
         String query = "";
         String where = "";
         String tableName = getToken(keywordPositionMap, tokens, TJdbc.FROM, 1);
@@ -257,27 +260,27 @@ public class TStatement {
         for (String s : tokens) {
             if (s.equals("evolution_history"))
             {
-                continue;
                 j=1;
+                continue;
             }
             if(j==1) {
-                query=query+"svt.prev_value as value, svt.vst as starting_time, svt.vet as ending_time";
+                query=query+" svt.prev_value as value, svt.vst as starting_time, svt.vet as ending_time ";
                 j++;
                 continue;
             }
             if (s.equals("where"))
                 i = 1;
             if (i == 1)
+                if(s.equals(";")) continue;
+                else
                 where = where + s + " ";
             else
                 query = query + s + " ";
         }
         if ("".equals(where))
-            query = query + "s join "+tableVt+" svt on s.id=svt.id_id where svt.indx="+indx+"order by svt.vst;";
+            query = query + "s join "+tableVt+" svt on s.id=svt.id_id where svt.indx="+indx+" order by svt.vst;";
         else
-            query = query + "s join "+tableVt+" svt on s.id=svt.id_id"+where+" and"+" svt.indx="+indx+"order by svt.vst;";
-//        select * from student d join student_vt a on d.id = a.id_id where name="ayush" order by a.VST limit 1;
-//      select * from student d join student_vt a on d.id = a.id_id  where (d.id,a.VST) in(select d.id,min(a.VST) from student d join student_vt a on d.id = a.id_id group by d.id);
+            query = query + "s join "+tableVt+" svt on s.id=svt.id_id and"+" svt.indx="+indx+" "+where+" order by svt.vst;";
 
         return query;
     }

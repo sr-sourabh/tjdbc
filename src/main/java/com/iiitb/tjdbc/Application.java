@@ -23,8 +23,8 @@ public class Application {
             //executeTUpdate(statement);
             //executeTSelectOnDate(statement);
             //executePrevious(statement);
-            executeNext(statement);
-
+//            executeNext(statement);
+            executeEvolution_history(statement);
             connection.close();
 
         } catch (Exception e) {
@@ -90,6 +90,15 @@ public class Application {
 
         while (resultset.next()) {
             System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) + " " + resultset.getString(4));
+        }
+    }
+
+    private static void executeEvolution_history(Statement statement) throws SQLException {
+        String query = "select evolution_history gpa from student where s.id=3 ;";
+        ResultSet resultset = statement.executeQuery(query);
+
+        while (resultset.next()) {
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) );
         }
     }
 }
