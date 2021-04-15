@@ -275,7 +275,7 @@ public class TStatement {
         if ("".equals(where))
             query = query + "s join "+tableVt+" svt on s.id=svt.id_id where svt.indx="+indx+"order by svt.vst;";
         else
-            query = query + "s join "+tableVt+" svt on s.id=svt.id_id"+where+" svt.indx="+indx+"order by svt.vst;";
+            query = query + "s join "+tableVt+" svt on s.id=svt.id_id"+where+" and"+" svt.indx="+indx+"order by svt.vst;";
 //        select * from student d join student_vt a on d.id = a.id_id where name="ayush" order by a.VST limit 1;
 //      select * from student d join student_vt a on d.id = a.id_id  where (d.id,a.VST) in(select d.id,min(a.VST) from student d join student_vt a on d.id = a.id_id group by d.id);
 
