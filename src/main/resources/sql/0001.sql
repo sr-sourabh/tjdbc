@@ -93,4 +93,26 @@ insert into student_vt(indx, updated_value, prev_value, vst, id_id)
 values (3, '3.9', '2.9', '2019-01-03', 3);
 
 
+-- Coalesce table data
+
+CREATE TABLE president_vt
+(
+    name          varchar(20),
+    position      varchar(20),
+    stt           timestamp,
+    ett           timestamp
+);
+
+-- data insert
+insert into president_vt values ('James Smith','President','1965-01-01','1969-01-01');
+insert into president_vt values ('James Smith','President','1969-01-01','1972-01-01');
+insert into president_vt values ('James Smith','President','1974-01-01','1976-01-01');
+insert into president_vt values ('Michael clarke','Vice President','1972-01-01','1974-01-01');
+insert into president_vt values ('Michael clarke','Vice President','1974-01-01','1977-01-01');
+insert into president_vt values ('Barack Obama','President','2004-01-01','2008-01-01');
+insert into president_vt values ('Barack Obama','President','2008-01-01','2012-01-01');
+insert into president_vt values ('Joe Biden','Vice President','2008-01-01','2012-01-01');
+insert into president_vt values ('Joe Biden','President','2020-01-01','2023-01-01');
+
+
 

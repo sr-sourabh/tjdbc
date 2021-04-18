@@ -42,6 +42,8 @@ public class TStatement {
             query = handleTjoin(keywordPositionMap, tokens, statement);
         } else if (keywordPositionMap.containsKey(TJdbc.TSELECT)) {
             query = handleTSelect(query, tokens, keywordPositionMap, statement);
+        } else if (keywordPositionMap.containsKey(TJdbc.COALESCE)){
+            query = handleCoalesce(tokens,statement);
         }
 
         return query;
@@ -328,6 +330,24 @@ public class TStatement {
 //        (case when m.vet < e.vet then m.vet else e.vet end) as finalenddate from department_vt m join employee_vt e on e.updated_value = m.id_id
 //        and ((m.vst between e.vst and e.vet) or (e.vst between m.vst and m.vet)) ;
 
+        return query;
+    }
+
+    private String handleCoalesce(List<String> tokens,Statement statement) throws SQLException{
+        String table =tokens.get(1) + "_vt";
+        Map<String, Integer> columnNameIndexMap = getColumnNameIndexMap(table, statement);
+        String columnList ="";
+        int mapSize = columnNameIndexMap.size();
+        for(Map.Entry<String,Integer> entry:columnNameIndexMap.entrySet()){
+            if(entry.getValue()<mapSize-2){
+                columnList += entry.getKey();
+                columnList += ",";
+            }
+        }
+        columnList = columnList.substring(0,columnList.length() - 1 );
+
+        String query = "select " + columnList + " ,min(stt) start_time, max(ett) end_time from " + table + " group by " + columnList;
+        System.out.println(query);
         return query;
     }
 }
