@@ -43,9 +43,15 @@ Statement statement = TJdbc.createStatement(connection);
 
 #### 4. Tinsert
 
-* Description
+* Description \
+  Used for inserting values inside of a temporal table
 * Syntax
+  ```
+  tinsert into table_name values ( value1,value2, .... )
+  ```
 * Example
+  ```
+  tinsert into student values (6,'Henry','active','3.75','CSE' )
 
 #### 5. Tupdate
 
@@ -59,15 +65,37 @@ Statement statement = TJdbc.createStatement(connection);
   ```
   tupdate student set gpa = 8.2 where id = 1
   ```
+#### 6. Tselect
+* Description \
+  Used to find an entity's attribute value on a particular date.
+* Syntax
+  ```
+  tselect column_name from table_name where (specify primary key value) and date = 'yyyy-mm-dd'
+  ```
+* Example
+  ```
+  tselect gpa from student where id = 1 and date = '2019-01-21'
 
-#### 6. Next
+#### 7. Next
 
 * Description
 * Syntax
 * Example
 
-#### 7. Previous
+#### 8. Previous
 
 * Description
 * Syntax
 * Example
+
+#### 9. Coalesce
+
+* Description \
+  Used for combining i.e coalescing multiple entries that have same attribute values except for the start and end time.
+* Syntax
+  ```
+  coalesce table_name
+  ```
+* Example
+  ```
+  coalesce president
