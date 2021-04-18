@@ -24,7 +24,8 @@ public class Application {
             //executeTSelectOnDate(statement);
             //executePrevious(statement);
             //executeNext(statement);
-            executeTjoin(statement);
+            //executeTjoin(statement);
+            executeCoalesce(statement);
 
             connection.close();
 
@@ -101,6 +102,14 @@ public class Application {
 
         while (resultset.next()) {
             System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3));
+        }
+    }
+
+    private static void executeCoalesce(Statement statement) throws SQLException{
+        String query = "Coalesce president"; // Syntax : Coalesce tableName
+        ResultSet resultSet = statement.executeQuery(query);
+        while (resultSet.next()){
+            System.out.println(resultSet.getString(1) + "    " + resultSet.getString(2) + "    " + resultSet.getString(3) + "    " + resultSet.getString(4));
         }
     }
 }
