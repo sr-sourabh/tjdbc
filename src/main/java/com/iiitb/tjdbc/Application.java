@@ -29,6 +29,9 @@ public class Application {
             //executeEvolutionFrom(statement);
             executeEvolutionFromandTo(statement);
 
+//            executeNext(statement);
+//            executeEvolution_history(statement);
+            executeTdelete(statement);
             connection.close();
 
         } catch (Exception e) {
@@ -94,6 +97,23 @@ public class Application {
 
         while (resultset.next()) {
             System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) + " " + resultset.getString(4));
+        }
+    }
+
+    private static void executeEvolution_history(Statement statement) throws SQLException {
+        String query = "select evolution_history gpa from student where s.id=3 ;";
+        ResultSet resultset = statement.executeQuery(query);
+
+        while (resultset.next()) {
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) );
+        }
+    }
+    private static void executeTdelete(Statement statement) throws SQLException{
+        String query="tdelete from student s where s.id=3 ;";
+        ResultSet resultset = statement.executeQuery(query);
+
+        while (resultset.next()) {
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3)+ " " + resultset.getString(4));
         }
     }
 
