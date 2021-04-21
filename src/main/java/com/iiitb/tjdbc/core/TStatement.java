@@ -42,8 +42,8 @@ public class TStatement {
             query = handleTjoin(keywordPositionMap, tokens, statement);
         } else if (keywordPositionMap.containsKey(TJdbc.TSELECT)) {
             query = handleTSelect(query, tokens, keywordPositionMap, statement);
-        } else if (keywordPositionMap.containsKey(TJdbc.COALESCE)){
-            query = handleCoalesce(tokens,statement);
+        } else if (keywordPositionMap.containsKey(TJdbc.COALESCE)) {
+            query = handleCoalesce(tokens, statement);
         } else if (keywordPositionMap.containsKey(TJdbc.EVOLUTIONFROM)) {
             query = handleEvolutionFrom(keywordPositionMap, tokens, statement);
         }
@@ -334,18 +334,18 @@ public class TStatement {
         return query;
     }
 
-    private String handleCoalesce(List<String> tokens,Statement statement) throws SQLException{
-        String table =tokens.get(1) + "_vt";
+    private String handleCoalesce(List<String> tokens, Statement statement) throws SQLException {
+        String table = tokens.get(1) + "_vt";
         Map<String, Integer> columnNameIndexMap = getColumnNameIndexMap(table, statement);
-        String columnList ="";
+        String columnList = "";
         int mapSize = columnNameIndexMap.size();
-        for(Map.Entry<String,Integer> entry:columnNameIndexMap.entrySet()){
-            if(entry.getValue()<mapSize-2){
+        for (Map.Entry<String, Integer> entry : columnNameIndexMap.entrySet()) {
+            if (entry.getValue() < mapSize - 2) {
                 columnList += entry.getKey();
                 columnList += ",";
             }
         }
-        columnList = columnList.substring(0,columnList.length() - 1 );
+        columnList = columnList.substring(0, columnList.length() - 1);
 
         String query = "select " + columnList + " ,min(stt) start_time, max(ett) end_time from " + table + " group by " + columnList;
         System.out.println(query);
@@ -355,16 +355,30 @@ public class TStatement {
     public String handleEvolutionFrom(Map<String, Integer> keywordPositionMap, List<String> tokens, Statement statement) throws SQLException {
         String query = "";
         String tableName = tokens.get(1);
-        ;
+
         String tableVt = tableName + "_vt";
 
-        String value = tokens.get(3);
+        String value1 = tokens.get(3);
+        String where = "";
 
         Map<String, Integer> columnNameIndexMap = getColumnNameIndexMap(tokens.get(1), statement);
         int indx = columnNameIndexMap.get(tokens.get(2));
 
+        if (tokens.get(4).equals("where")) {
+            where = " and s.id_id = " + tokens.get(7) + "";
+        }
+
+        query = "with temp as (select vst,id_id from " + tableVt + " where indx = " + indx + "" +
+                " and updated_value = " + value1 + ") select * from " + tableVt + " s" +
+                " join temp t on s.id_id = t.id_id and s.vst >= t.vst where s.indx=" + indx + where + " ;";
 
 
+//        User Query
+//        EvolutionFrom student gpa 5.2 ;
+//        EvolutionFrom student gpa 5.2 where id = 1 ;
+
+// updated query
+//        with temp as (select vst,id_id from student_vt where indx = 3 and updated_value = 5.2) select * from student_vt s join temp t on s.id_id = t.id_id and s.vst >= t.vst where s.indx=3 ;
         return query;
     }
 }

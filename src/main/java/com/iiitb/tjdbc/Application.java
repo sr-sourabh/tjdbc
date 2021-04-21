@@ -115,6 +115,8 @@ public class Application {
     }
 
     private static void executeEvolutionFrom(Statement statement) throws SQLException {
+        //        EvolutionFrom student gpa 5.2 ;
+        //        EvolutionFrom student gpa 5.2 where id = 1 ;
         String query = "EvolutionFrom student gpa 5.2 ;";
         ResultSet resultset = statement.executeQuery(query);
 
