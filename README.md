@@ -105,7 +105,7 @@ Statement statement = TJdbc.createStatement(connection);
 #### 10. EvolutionFrom
 
 * Description \
-  Used to display the evolution dates along with values to current value
+  Used to display the evolution dates along with values from val1 to current value
 * Syntax
   ```
   EvolutionFrom table_name col val ;
@@ -115,3 +115,15 @@ Statement statement = TJdbc.createStatement(connection);
   "EvolutionFrom student gpa 5.2 ;"
   "EvolutionFrom student gpa 5.2 where id = 1 ;"
 
+#### 11. EvolutionFromAndTo
+
+* Description \
+  Used to display the evolution dates along with values from val1 to val2
+* Syntax
+  ```
+  EvolutionFromAndTo table_name col val1 val2 ;
+  ```
+* Example
+  ```
+  "EvolutionFromAndTo student gpa 5.2 2.9 ;"
+  "EvolutionFromAndTo student gpa 5.2 2.9 where id = 1 ;"
