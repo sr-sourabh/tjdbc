@@ -25,7 +25,9 @@ public class Application {
             //executePrevious(statement);
             //executeNext(statement);
             //executeTjoin(statement);
-            executeCoalesce(statement);
+            //executeCoalesce(statement);
+            //executeEvolutionFrom(statement);
+            executeEvolutionFromandTo(statement);
 
             connection.close();
 
@@ -105,11 +107,33 @@ public class Application {
         }
     }
 
-    private static void executeCoalesce(Statement statement) throws SQLException{
+    private static void executeCoalesce(Statement statement) throws SQLException {
         String query = "Coalesce president"; // Syntax : Coalesce tableName
         ResultSet resultSet = statement.executeQuery(query);
-        while (resultSet.next()){
+        while (resultSet.next()) {
             System.out.println(resultSet.getString(1) + "    " + resultSet.getString(2) + "    " + resultSet.getString(3) + "    " + resultSet.getString(4));
+        }
+    }
+
+    private static void executeEvolutionFrom(Statement statement) throws SQLException {
+        //        "EvolutionFrom student gpa 5.2 ;"
+        //        "EvolutionFrom student gpa 5.2 where id = 1 ;"
+        String query = "EvolutionFrom student gpa 5.2 ;";
+        ResultSet resultset = statement.executeQuery(query);
+
+        while (resultset.next()) {
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) + " " + resultset.getString(4));
+        }
+    }
+
+    private static void executeEvolutionFromandTo(Statement statement) throws SQLException {
+        //        "EvolutionFromAndTo student gpa 5.2 2.9 ;"
+        //        "EvolutionFromAndTo student gpa 5.2 2.9 where id = 1 ;"
+        String query = "EvolutionFromAndTo student gpa 5.2 2.9 ;";
+        ResultSet resultset = statement.executeQuery(query);
+
+        while (resultset.next()) {
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) + " " + resultset.getString(4));
         }
     }
 }

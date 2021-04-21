@@ -65,7 +65,9 @@ Statement statement = TJdbc.createStatement(connection);
   ```
   tupdate student set gpa = 8.2 where id = 1
   ```
+
 #### 6. Tselect
+
 * Description \
   Used to find an entity's attribute value on a particular date.
 * Syntax
@@ -99,3 +101,29 @@ Statement statement = TJdbc.createStatement(connection);
 * Example
   ```
   coalesce president
+
+#### 10. EvolutionFrom
+
+* Description \
+  Used to display the evolution dates along with values from val1 to current value
+* Syntax
+  ```
+  EvolutionFrom table_name col val ;
+  ```
+* Example
+  ```
+  "EvolutionFrom student gpa 5.2 ;"
+  "EvolutionFrom student gpa 5.2 where id = 1 ;"
+
+#### 11. EvolutionFromAndTo
+
+* Description \
+  Used to display the evolution dates along with values from val1 to val2
+* Syntax
+  ```
+  EvolutionFromAndTo table_name col val1 val2 ;
+  ```
+* Example
+  ```
+  "EvolutionFromAndTo student gpa 5.2 2.9 ;"
+  "EvolutionFromAndTo student gpa 5.2 2.9 where id = 1 ;"
