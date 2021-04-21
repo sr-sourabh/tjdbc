@@ -26,7 +26,8 @@ public class Application {
             //executeNext(statement);
             //executeTjoin(statement);
             //executeCoalesce(statement);
-            executeEvolutionFrom(statement);
+            //executeEvolutionFrom(statement);
+            executeEvolutionFromandTo(statement);
 
             connection.close();
 
@@ -115,9 +116,20 @@ public class Application {
     }
 
     private static void executeEvolutionFrom(Statement statement) throws SQLException {
-        //        EvolutionFrom student gpa 5.2 ;
-        //        EvolutionFrom student gpa 5.2 where id = 1 ;
+        //        "EvolutionFrom student gpa 5.2 ;"
+        //        "EvolutionFrom student gpa 5.2 where id = 1 ;"
         String query = "EvolutionFrom student gpa 5.2 ;";
+        ResultSet resultset = statement.executeQuery(query);
+
+        while (resultset.next()) {
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) + " " + resultset.getString(4));
+        }
+    }
+
+    private static void executeEvolutionFromandTo(Statement statement) throws SQLException {
+        //        "EvolutionFromAndTo student gpa 5.2 2.9 ;"
+        //        "EvolutionFromAndTo student gpa 5.2 2.9 where id = 1 ;"
+        String query = "EvolutionFromAndTo student gpa 5.2 2.9 ;";
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {

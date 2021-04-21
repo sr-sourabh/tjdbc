@@ -46,6 +46,8 @@ public class TStatement {
             query = handleCoalesce(tokens, statement);
         } else if (keywordPositionMap.containsKey(TJdbc.EVOLUTIONFROM)) {
             query = handleEvolutionFrom(keywordPositionMap, tokens, statement);
+        } else if (keywordPositionMap.containsKey(TJdbc.EVOLUTIONFROMANDTO)) {
+            query = handleEvolutionFromAndTo(keywordPositionMap, tokens, statement);
         }
         return query;
     }
@@ -379,6 +381,40 @@ public class TStatement {
 
 // updated query
 //        with temp as (select vst,id_id from student_vt where indx = 3 and updated_value = 5.2) select * from student_vt s join temp t on s.id_id = t.id_id and s.vst >= t.vst where s.indx=3 ;
+        return query;
+    }
+
+    public String handleEvolutionFromAndTo(Map<String, Integer> keywordPositionMap, List<String> tokens, Statement statement) throws SQLException {
+        String query = "";
+        String tableName = tokens.get(1);
+
+        String tableVt = tableName + "_vt";
+
+        String value1 = tokens.get(3);
+        String value2 = tokens.get(4);
+        String where = "";
+
+        Map<String, Integer> columnNameIndexMap = getColumnNameIndexMap(tokens.get(1), statement);
+        int indx = columnNameIndexMap.get(tokens.get(2));
+
+        if (tokens.get(5).equals("where")) {
+            where = " and s.id_id = "+tokens.get(8)+"";
+        }
+
+        query = "with temp as (select vst,id_id from "+tableVt+" where indx = "+indx+" and updated_value = "+value1+") ," +
+                "  temp2 as (select vst,id_id from "+tableVt+" where indx = "+indx+" and updated_value = "+value2+")" +
+                "  select * from "+tableVt+" s join temp t on s.id_id = t.id_id and s.vst >= t.vst" +
+                " join temp2 t2 on t2.id_id=s.id_id and s.vst<=t2.vst where s.indx="+indx+where+" ;";
+
+
+//        User Query
+//        EvolutionFromAndTo student gpa 5.2 2.9 ;
+//        EvolutionFromAndTo student gpa 5.2 2.9 where id = 1 ;
+
+// updated query
+//        with temp as (select vst,id_id from student_vt where indx = 3 and updated_value = 5.2) ,  temp2 as (select vst,id_id from student_vt where indx = 3 and updated_value = 2.9)  select * from student_vt s join temp t on s.id_id = t.id_id and s.vst >= t.vst join temp2 t2 on t2.id_id=s.id_id and s.vst<=t2.vst where s.indx=3;
+//        with temp as (select vst,id_id from student_vt where indx = 3 and updated_value = 5.2) ,  temp2 as (select vst,id_id from student_vt where indx = 3 and updated_value = 2.9;)  select * from student_vt s join temp t on s.id_id = t.id_id and s.vst >= t.vst join temp2 t2 on t2.id_id=s.id_id and s.vst<=t2.vst where s.indx=3;
+
         return query;
     }
 }
