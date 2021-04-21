@@ -21,7 +21,6 @@ public class DynamicInvocationHandler implements InvocationHandler {
     public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
         if (method.getName().equals(EXECUTE_QUERY) || method.getName().equals(EXECUTE_UPDATE)) {
             objects[0] = tStatement.processQuery(objects[0].toString(), o);
-            System.out.println("OBJ[0] : " + objects[0]);
         }
         return method.invoke(target, objects);
     }
