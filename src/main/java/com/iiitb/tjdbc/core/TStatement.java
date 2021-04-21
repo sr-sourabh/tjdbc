@@ -44,8 +44,9 @@ public class TStatement {
             query = handleTSelect(query, tokens, keywordPositionMap, statement);
         } else if (keywordPositionMap.containsKey(TJdbc.COALESCE)){
             query = handleCoalesce(tokens,statement);
+        } else if (keywordPositionMap.containsKey(TJdbc.EVOLUTIONFROM)) {
+            query = handleEvolutionFrom(keywordPositionMap, tokens, statement);
         }
-
         return query;
     }
 
@@ -348,6 +349,22 @@ public class TStatement {
 
         String query = "select " + columnList + " ,min(stt) start_time, max(ett) end_time from " + table + " group by " + columnList;
         System.out.println(query);
+        return query;
+    }
+
+    public String handleEvolutionFrom(Map<String, Integer> keywordPositionMap, List<String> tokens, Statement statement) throws SQLException {
+        String query = "";
+        String tableName = tokens.get(1);
+        ;
+        String tableVt = tableName + "_vt";
+
+        String value = tokens.get(3);
+
+        Map<String, Integer> columnNameIndexMap = getColumnNameIndexMap(tokens.get(1), statement);
+        int indx = columnNameIndexMap.get(tokens.get(2));
+
+
+
         return query;
     }
 }
