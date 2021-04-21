@@ -23,6 +23,9 @@ public class Application {
             //executeTUpdate(statement);
             //executeTSelectOnDate(statement);
             //executePrevious(statement);
+            //executeNext(statement);
+            executeTjoin(statement);
+
 //            executeNext(statement);
 //            executeEvolution_history(statement);
             executeTdelete(statement);
@@ -108,6 +111,16 @@ public class Application {
 
         while (resultset.next()) {
             System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3)+ " " + resultset.getString(4));
+        }
+    }
+
+    private static void executeTjoin(Statement statement) throws SQLException {
+//        String query = "tselect employee e tjoin department d on e.d_id = d.d_id where d.d_id = 1 ;";
+        String query = "tselect employee e tjoin department d on e.d_id = d.d_id ;";
+        ResultSet resultset = statement.executeQuery(query);
+
+        while (resultset.next()) {
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3));
         }
     }
 }

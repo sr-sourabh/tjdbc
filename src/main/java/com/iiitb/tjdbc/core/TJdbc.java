@@ -20,6 +20,8 @@ public class TJdbc {
     public static final String TSELECT = "tselect";
     public static final String PREVIOUS = "previous";
     public static final String NEXT = "next";
+    public static final String TJOIN = "tjoin";
+
     public static final String EVOLUTION_HISTORY="evolution_history";
     public static final String TDELETE="tdelete";
     public TJdbc() {
@@ -37,6 +39,7 @@ public class TJdbc {
         keywords.add(TSELECT);
         keywords.add(PREVIOUS);
         keywords.add(NEXT);
+        keywords.add(TJOIN);
         keywords.add(EVOLUTION_HISTORY);
         keywords.add(TDELETE);
     }
