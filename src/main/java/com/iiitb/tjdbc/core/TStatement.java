@@ -1,14 +1,11 @@
 package com.iiitb.tjdbc.core;
 
-import com.mysql.cj.jdbc.StatementWrapper;
-
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.iiitb.tjdbc.util.CommonUtils.getUrl;
-import static com.iiitb.tjdbc.util.ConnectionDetails.PASSWORD;
-import static com.iiitb.tjdbc.util.ConnectionDetails.USER;
 
 public class TStatement {
 
@@ -51,12 +48,10 @@ public class TStatement {
             query = handleEvolutionFrom(keywordPositionMap, tokens, statement);
         } else if (keywordPositionMap.containsKey(TJdbc.EVOLUTIONFROMANDTO)) {
             query = handleEvolutionFromAndTo(keywordPositionMap, tokens, statement);
-        }
-        else if (keywordPositionMap.containsKey(TJdbc.EVOLUTION_HISTORY)){
-            query=handle_evolution_history(keywordPositionMap,tokens,statement);
-        }
-        else if (keywordPositionMap.containsKey(TJdbc.TDELETE)){
-            query=handleTDelete(query,tokens,keywordPositionMap,statement);
+        } else if (keywordPositionMap.containsKey(TJdbc.EVOLUTION_HISTORY)) {
+            query = handle_evolution_history(keywordPositionMap, tokens, statement);
+        } else if (keywordPositionMap.containsKey(TJdbc.TDELETE)) {
+            query = handleTDelete(query, tokens, keywordPositionMap, statement);
         }
 
         return query;
@@ -263,9 +258,9 @@ public class TStatement {
 
         return query;
     }
-    public String handle_evolution_history(Map<String, Integer> keywordPositionMap, List<String> tokens,Statement statement) throws SQLException
-    {
-        int i = 0,j=0;
+
+    public String handle_evolution_history(Map<String, Integer> keywordPositionMap, List<String> tokens, Statement statement) throws SQLException {
+        int i = 0, j = 0;
         String query = "";
         String where = "";
         String tableName = getToken(keywordPositionMap, tokens, TJdbc.FROM, 1);
@@ -273,29 +268,28 @@ public class TStatement {
         Map<String, Integer> columnNameIndexMap = getColumnNameIndexMap(tableName, statement);
         int indx = columnNameIndexMap.get(getToken(keywordPositionMap, tokens, TJdbc.EVOLUTION_HISTORY, 1));
         for (String s : tokens) {
-            if (s.equals("evolution_history"))
-            {
-                j=1;
+            if (s.equals("evolution_history")) {
+                j = 1;
                 continue;
             }
-            if(j==1) {
-                query=query+" svt.prev_value as value, svt.vst as starting_time, svt.vet as ending_time ";
+            if (j == 1) {
+                query = query + " svt.prev_value as value, svt.vst as starting_time, svt.vet as ending_time ";
                 j++;
                 continue;
             }
             if (s.equals("where"))
                 i = 1;
             if (i == 1)
-                if(s.equals(";")) continue;
+                if (s.equals(";")) continue;
                 else
-                where = where + s + " ";
+                    where = where + s + " ";
             else
                 query = query + s + " ";
         }
         if ("".equals(where))
-            query = query + "s join "+tableVt+" svt on s.id=svt.id_id where svt.indx="+indx+" order by svt.vst;";
+            query = query + "s join " + tableVt + " svt on s.id=svt.id_id where svt.indx=" + indx + " order by svt.vst;";
         else
-            query = query + "s join "+tableVt+" svt on s.id=svt.id_id and"+" svt.indx="+indx+" "+where+" order by svt.vst;";
+            query = query + "s join " + tableVt + " svt on s.id=svt.id_id and" + " svt.indx=" + indx + " " + where + " order by svt.vst;";
 
         return query;
     }
@@ -342,46 +336,33 @@ public class TStatement {
 //        select id_id, updated_value,VST,VET from student_VT where id_id=1 and indx=4 and prev_value = "CSE";
         return query;
     }
+
     private String handleTDelete(String query, List<String> tokens, Map<String, Integer> keywordPositionMap, Statement statement) throws SQLException {
         String tableName = getToken(keywordPositionMap, tokens, TJdbc.FROM, 1);
-        Map<String, Integer> columnNameIndexMap = getColumnNameIndexMap(tableName, statement);
         query = query.replace(TJdbc.TDELETE, "delete");
         String pureDeleteQuery = query;
-        System.out.println(pureDeleteQuery);
         String tableVt = tableName + "_vt";
 //        query=query.replace(tableName, tableName+" s");
-        int i=0;
-        String where="";
-        query ="delete ";
+        int i = 0;
+        String where = "";
+        query = "delete ";
         for (String s : tokens) {
             if (s.equals("tdelete"))
                 continue;
             if (s.equals("where"))
                 i = 1;
             if (i == 1)
-                if(s.equals(";")) continue;
+                if (s.equals(";")) continue;
                 else
                     where = where + s + " ";
-                query = query + s + " ";
+            query = query + s + " ";
         }
-        query=query+";";
-        pureDeleteQuery=query;
-        String idtoupdatequery="select svt.id from "+tableVt+" svt, "+tableName+" s "+where+" and s.id=svt.id_id and svt.vet is NULL ;";
-        Connection connection = DriverManager.getConnection(getUrl(), USER, PASSWORD);
-        Statement statement2 = TJdbc.createStatement(connection);
-        ResultSet resultSet=statement2.executeQuery(idtoupdatequery);
+        query = query + ";";
+        pureDeleteQuery = query;
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        String vet = timestamp.toString();
-        int idToUpdateDate;
-        while (resultSet.next()) {
-             String idtoupdate = resultSet.getString("id");
-//            String idtoupdate=String.valueOf(idToUpdateDate);
-            String updateDateQuery = "update "+tableVt+" SET vet= '" + timestamp + "' where id= "+idtoupdate+ " ;";
-            statement.executeUpdate(updateDateQuery);
-        }
-//        String updatequery="update "+tableVt+" SET vet= '" + timestamp + "' where id= ( select svt.id from "+tableVt+" svt, "+tableName+" s "+where+" and s.id=svt.id_id and svt.vet is NULL);";
-//        statement.executeUpdate(updatequery);
-        statement.executeUpdate(pureDeleteQuery);
+        String updateDateQuery = "update " + tableVt + " SET vet = '" + timestamp + "' " + where + " and vet is NULL";
+        statement.executeUpdate(updateDateQuery);
+
         return pureDeleteQuery;
     }
 
@@ -486,13 +467,13 @@ public class TStatement {
         int indx = columnNameIndexMap.get(tokens.get(2));
 
         if (tokens.get(5).equals("where")) {
-            where = " and s.id_id = "+tokens.get(8)+"";
+            where = " and s.id_id = " + tokens.get(8) + "";
         }
 
-        query = "with temp as (select vst,id_id from "+tableVt+" where indx = "+indx+" and updated_value = "+value1+") ," +
-                "  temp2 as (select vst,id_id from "+tableVt+" where indx = "+indx+" and updated_value = "+value2+")" +
-                "  select * from "+tableVt+" s join temp t on s.id_id = t.id_id and s.vst >= t.vst" +
-                " join temp2 t2 on t2.id_id=s.id_id and s.vst<=t2.vst where s.indx="+indx+where+" ;";
+        query = "with temp as (select vst,id_id from " + tableVt + " where indx = " + indx + " and updated_value = " + value1 + ") ," +
+                "  temp2 as (select vst,id_id from " + tableVt + " where indx = " + indx + " and updated_value = " + value2 + ")" +
+                "  select * from " + tableVt + " s join temp t on s.id_id = t.id_id and s.vst >= t.vst" +
+                " join temp2 t2 on t2.id_id=s.id_id and s.vst<=t2.vst where s.indx=" + indx + where + " ;";
 
 
 //        User Query

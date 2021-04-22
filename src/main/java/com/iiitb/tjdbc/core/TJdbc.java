@@ -25,8 +25,9 @@ public class TJdbc {
     public static final String EVOLUTIONFROM = "evolutionfrom";
     public static final String EVOLUTIONFROMANDTO = "evolutionfromandto";
 
-    public static final String EVOLUTION_HISTORY="evolution_history";
-    public static final String TDELETE="tdelete";
+    public static final String EVOLUTION_HISTORY = "evolution_history";
+    public static final String TDELETE = "tdelete";
+
     public TJdbc() {
         populateKeyWords();
     }

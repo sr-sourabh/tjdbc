@@ -27,25 +27,26 @@ public class Application {
             //executeTjoin(statement);
             //executeCoalesce(statement);
             //executeEvolutionFrom(statement);
-            executeEvolutionFromandTo(statement);
+            //executeEvolutionFromandTo(statement);
 
-//            executeNext(statement);
-//            executeEvolution_history(statement);
-            executeTdelete(statement);
+            //executeNext(statement);
+            //executeEvolution_history(statement);
+            //executeTdelete(statement);
             connection.close();
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
         }
     }
 
     private static void executeTUpdate(Statement statement) throws SQLException {
-        String query = "tupdate student set gpa = 10.2 where id = 1 ";
+        String query = "tupdate dummy set val = 82 where id = 1 ";
         statement.executeUpdate(query);
     }
 
     private static void executeInsert(Statement statement) throws SQLException {
-        String query = "tinsert into student values (6,'Henry','active','3.75','CSE')";
+        String query = "tinsert into dummy values (1, 22)";
         statement.executeUpdate(query);
     }
 
@@ -68,7 +69,7 @@ public class Application {
     }
 
     private static void executeTemporalize(Statement statement) throws SQLException {
-        String query = "Temporalize student";
+        String query = "Temporalize dummy";
         statement.executeUpdate(query);
     }
 
@@ -105,16 +106,13 @@ public class Application {
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
-            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) );
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3));
         }
     }
-    private static void executeTdelete(Statement statement) throws SQLException{
-        String query="tdelete from student s where s.id=3 ;";
-        ResultSet resultset = statement.executeQuery(query);
 
-        while (resultset.next()) {
-            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3)+ " " + resultset.getString(4));
-        }
+    private static void executeTdelete(Statement statement) throws SQLException {
+        String query = "tdelete from dummy where id=1 ;";
+        statement.executeUpdate(query);
     }
 
     private static void executeTjoin(Statement statement) throws SQLException {
