@@ -17,21 +17,21 @@ public class Application {
 
             //uncomment only the part you are working on
             //executeTemporalize(statement);
-            //executeInsert(statement);
-            //executeFirst(statement);
+//            executeInsert(statement);
+//            executeFirst(statement);
             //executeLast(statement);
-            //executeTUpdate(statement);
-            //executeTSelectOnDate(statement);
+//            executeTUpdate(statement);
+            executeTSelectOnDate(statement);
             //executePrevious(statement);
             //executeNext(statement);
             //executeTjoin(statement);
             //executeCoalesce(statement);
             //executeEvolutionFrom(statement);
-            executeEvolutionFromandTo(statement);
+//            executeEvolutionFromandTo(statement);
 
 //            executeNext(statement);
 //            executeEvolution_history(statement);
-            executeTdelete(statement);
+//            executeTdelete(statement);
             connection.close();
 
         } catch (Exception e) {
@@ -40,12 +40,14 @@ public class Application {
     }
 
     private static void executeTUpdate(Statement statement) throws SQLException {
-        String query = "tupdate student set gpa = 10.2 where id = 1 ";
+//        String query = "tupdate student set gpa = 10.2 where id = 1 ";
+        String query = "tupdate dummy set val = 10 where id = 1 ";
         statement.executeUpdate(query);
     }
 
     private static void executeInsert(Statement statement) throws SQLException {
-        String query = "tinsert into student values (6,'Henry','active','3.75','CSE')";
+//        String query = "tinsert into student values (6,'Henry','active','3.75','CSE')";
+        String query = "tinsert into dummy values (1,2)";
         statement.executeUpdate(query);
     }
 
@@ -74,11 +76,12 @@ public class Application {
 
     private static void executeTSelectOnDate(Statement statement) throws SQLException {
         String query = "tselect gpa from student where id = 1 and date = '2019-01-21' ";
+//        String query = "select * from student";
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
             // can parse the results accordinly with user needs
-            System.out.println("Current results are : " + resultset.getString(3) + " for student id " + resultset.getInt(7));
+            System.out.println("Current results are : " + resultset.getString(3) + " for student id " + resultset.getString(7));
         }
     }
 
@@ -105,15 +108,17 @@ public class Application {
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
-            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) );
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3));
         }
     }
-    private static void executeTdelete(Statement statement) throws SQLException{
-        String query="tdelete from student s where s.id=3 ;";
+
+    private static void executeTdelete(Statement statement) throws SQLException {
+//        String query="tdelete from student s where s.id=3 ;";
+        String query = "tdelete from dummy s where s.id=1 ;";
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
-            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3)+ " " + resultset.getString(4));
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) + " " + resultset.getString(4));
         }
     }
 
