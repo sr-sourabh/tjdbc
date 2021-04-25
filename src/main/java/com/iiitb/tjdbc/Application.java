@@ -17,24 +17,26 @@ public class Application {
 
             //uncomment only the part you are working on
             //executeTemporalize(statement);
-//            executeInsert(statement);
-//            executeFirst(statement);
+            //executeInsert(statement);
+            //executeFirst(statement);
             //executeLast(statement);
-//            executeTUpdate(statement);
-            executeTSelectOnDate(statement);
+            //executeTUpdate(statement);
+            //executeTSelectOnDate(statement);
             //executePrevious(statement);
             //executeNext(statement);
             //executeTjoin(statement);
             //executeCoalesce(statement);
             //executeEvolutionFrom(statement);
-//            executeEvolutionFromandTo(statement);
+            //executeEvolutionFromandTo(statement);
 
-//            executeNext(statement);
-//            executeEvolution_history(statement);
-//            executeTdelete(statement);
+            //executeNext(statement);
+            //executeEvolution_history(statement);
+            //executeTdelete(statement);
+            executedifference(statement);
             connection.close();
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
         }
     }
@@ -70,7 +72,7 @@ public class Application {
     }
 
     private static void executeTemporalize(Statement statement) throws SQLException {
-        String query = "Temporalize student";
+        String query = "Temporalize dummy";
         statement.executeUpdate(query);
     }
 
@@ -113,13 +115,8 @@ public class Application {
     }
 
     private static void executeTdelete(Statement statement) throws SQLException {
-//        String query="tdelete from student s where s.id=3 ;";
-        String query = "tdelete from dummy s where s.id=1 ;";
-        ResultSet resultset = statement.executeQuery(query);
-
-        while (resultset.next()) {
-            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) + " " + resultset.getString(4));
-        }
+        String query = "tdelete from dummy where id=1 ;";
+        statement.executeUpdate(query);
     }
 
     private static void executeTjoin(Statement statement) throws SQLException {
@@ -159,6 +156,16 @@ public class Application {
 
         while (resultset.next()) {
             System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) + " " + resultset.getString(4));
+        }
+    }
+
+    private static void executedifference(Statement statement) throws SQLException {
+//        String query = "tselect difference employee e tjoin department d on e.d_id = d.d_id where d.d_id = 1 ;";
+        String query = "tselect difference employee e tjoin department d on e.d_id = d.d_id ;";
+        ResultSet resultset = statement.executeQuery(query);
+
+        while (resultset.next()) {
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) + " " + resultset.getString(4) + " " + resultset.getString(5) + " " + resultset.getString(6) + " " + resultset.getString(7) + " " + resultset.getString(8));
         }
     }
 }

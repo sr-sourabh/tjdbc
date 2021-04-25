@@ -89,6 +89,10 @@ values (7, 1, 10, 9, '2001-11-01', '2002-07-31', 2);
 insert into department_vt
 values (8, 1, 11, 10, '2002-04-01', '2003-02-28', 2);
 
+-- update this
+insert into department_vt
+values (9, 1, 12, 11, '1999-04-01', '2020-04-01', 2);
+
 
 
 --  Don't delete now
@@ -121,3 +125,8 @@ values (8, 1, 11, 10, '2002-04-01', '2003-02-28', 2);
 -- select m.id_id as department_id,m.updated_value as m_id, e.id_id as employee_id, e.updated_value as department_id, (case when m.vst > e.vst then m.vst else e.vst end) as finalstartdate,
 --        (case when m.vet < e.vet then m.vet else e.vet end) as finalenddate from department_vt m join employee_vt e on e.updated_value = m.id_id
 --     and ((m.vst between e.vst and e.vet) or (e.vst between m.vst and m.vet)) ;
+
+
+
+
+
