@@ -32,6 +32,7 @@ public class Application {
             //executeNext(statement);
             //executeEvolution_history(statement);
             //executeTdelete(statement);
+            executedifference(statement);
             connection.close();
 
         } catch (Exception e) {
@@ -41,12 +42,14 @@ public class Application {
     }
 
     private static void executeTUpdate(Statement statement) throws SQLException {
-        String query = "tupdate dummy set val = 82 where id = 1 ";
+//        String query = "tupdate student set gpa = 10.2 where id = 1 ";
+        String query = "tupdate dummy set val = 10 where id = 1 ";
         statement.executeUpdate(query);
     }
 
     private static void executeInsert(Statement statement) throws SQLException {
-        String query = "tinsert into dummy values (1, 22)";
+//        String query = "tinsert into student values (6,'Henry','active','3.75','CSE')";
+        String query = "tinsert into dummy values (1,2)";
         statement.executeUpdate(query);
     }
 
@@ -75,11 +78,12 @@ public class Application {
 
     private static void executeTSelectOnDate(Statement statement) throws SQLException {
         String query = "tselect gpa from student where id = 1 and date = '2019-01-21' ";
+//        String query = "select * from student";
         ResultSet resultset = statement.executeQuery(query);
 
         while (resultset.next()) {
             // can parse the results accordinly with user needs
-            System.out.println("Current results are : " + resultset.getString(3) + " for student id " + resultset.getInt(7));
+            System.out.println("Current results are : " + resultset.getString(3) + " for student id " + resultset.getString(7));
         }
     }
 
@@ -152,6 +156,16 @@ public class Application {
 
         while (resultset.next()) {
             System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) + " " + resultset.getString(4));
+        }
+    }
+
+    private static void executedifference(Statement statement) throws SQLException {
+//        String query = "tselect difference employee e tjoin department d on e.d_id = d.d_id where d.d_id = 1 ;";
+        String query = "tselect difference employee e tjoin department d on e.d_id = d.d_id ;";
+        ResultSet resultset = statement.executeQuery(query);
+
+        while (resultset.next()) {
+            System.out.println(resultset.getString(1) + " " + resultset.getString(2) + " " + resultset.getString(3) + " " + resultset.getString(4) + " " + resultset.getString(5) + " " + resultset.getString(6) + " " + resultset.getString(7) + " " + resultset.getString(8));
         }
     }
 }

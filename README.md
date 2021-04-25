@@ -127,3 +127,21 @@ Statement statement = TJdbc.createStatement(connection);
   ```
   "EvolutionFromAndTo student gpa 5.2 2.9 ;"
   "EvolutionFromAndTo student gpa 5.2 2.9 where id = 1 ;"
+
+#### 12. Difference
+
+* Description \
+  Used to display the dates along with values excluding the intersection part
+* Syntax
+  ```
+  tselect difference table1 e tjoin table2 d on e.d_id = d.d_id ;
+  ```
+* Example
+  ```
+  "tselect difference employee e tjoin department d on e.d_id = d.d_id ;"
+  "tselect difference employee e tjoin department d on e.d_id = d.d_id where d.d_id = 1 ;"
+
+
+
+
+

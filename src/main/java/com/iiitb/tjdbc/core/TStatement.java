@@ -38,10 +38,10 @@ public class TStatement {
             query = handlePrevious(keywordPositionMap, tokens, statement);
         } else if (keywordPositionMap.containsKey(TJdbc.NEXT)) {
             query = handleNext(keywordPositionMap, tokens, statement);
+        } else if (keywordPositionMap.containsKey(TJdbc.DIFFERENCE)) {
+            query = handleTDifference(keywordPositionMap, tokens, statement);
         } else if (keywordPositionMap.containsKey(TJdbc.TJOIN)) {
             query = handleTjoin(keywordPositionMap, tokens, statement);
-        } else if (keywordPositionMap.containsKey(TJdbc.TSELECT)) {
-            query = handleTSelect(query, tokens, keywordPositionMap, statement);
         } else if (keywordPositionMap.containsKey(TJdbc.COALESCE)) {
             query = handleCoalesce(tokens, statement);
         } else if (keywordPositionMap.containsKey(TJdbc.EVOLUTIONFROM)) {
@@ -52,6 +52,8 @@ public class TStatement {
             query = handle_evolution_history(keywordPositionMap, tokens, statement);
         } else if (keywordPositionMap.containsKey(TJdbc.TDELETE)) {
             query = handleTDelete(query, tokens, keywordPositionMap, statement);
+        } else if (keywordPositionMap.containsKey(TJdbc.TSELECT)) {
+            query = handleTSelect(query, tokens, keywordPositionMap, statement);
         }
 
         return query;
@@ -483,6 +485,51 @@ public class TStatement {
 // updated query
 //        with temp as (select vst,id_id from student_vt where indx = 3 and updated_value = 5.2) ,  temp2 as (select vst,id_id from student_vt where indx = 3 and updated_value = 2.9)  select * from student_vt s join temp t on s.id_id = t.id_id and s.vst >= t.vst join temp2 t2 on t2.id_id=s.id_id and s.vst<=t2.vst where s.indx=3;
 //        with temp as (select vst,id_id from student_vt where indx = 3 and updated_value = 5.2) ,  temp2 as (select vst,id_id from student_vt where indx = 3 and updated_value = 2.9;)  select * from student_vt s join temp t on s.id_id = t.id_id and s.vst >= t.vst join temp2 t2 on t2.id_id=s.id_id and s.vst<=t2.vst where s.indx=3;
+
+        return query;
+    }
+
+    private String handleTDifference(Map<String, Integer> keywordPositionMap, List<String> tokens, Statement statement) {
+        String query = "";
+        String table1 = tokens.get(2);
+        String table1_vt = table1 + "_vt";
+        String e = tokens.get(3);
+        String table2 = tokens.get(5);
+        String table2_vt = table2 + "_vt";
+        String m = tokens.get(6);
+
+        String f1 = (tokens.get(8));
+        String f = f1.substring(1);
+        String l1 = (tokens.get(10));
+        String l = l1.substring(1);
+
+        String where = "";
+        if (tokens.get(11).equals("where")) {
+            where = "where " + m + ".id_id = " + tokens.get(14);
+        }
+
+        query = "select " + m + ".id_id as " + table2 + "_id," + m + ".updated_value as m_id, " + e + ".id_id as " + table1 + "_id, " + e + ".updated_value as " + table2 + "_id," +
+                "(case when " + m + ".vst < " + e + ".vst then " + m + ".vst else NULL end) as left_startdate," +
+                "(case when (" + m + ".vet < " + e + ".vet and " + m + ".vet > " + e + ".vst) or ((" + e + ".vst between " + m + ".vst and " + m + ".vet) and (" + e + ".vet between " + m + ".vst and " + m + ".vet)) then " + e + ".vst else NULL end) as left_enddate, " +
+                "(case when (" + e + ".vst < " + m + ".vst and " + e + ".vet > " + m + ".vst) or ((" + e + ".vst between " + m + ".vst and " + m + ".vet) and (" + e + ".vet between " + m + ".vst and " + m + ".vet)) then " + e + ".vst else NULL end) as right_startdate, " +
+                "(case when " + m + ".vet > " + e + ".vet then " + m + ".vet else NULL end) as right_enddate  " +
+                " from " + table2_vt + " " + m + " join " + table1_vt + " " + e + " on " + e + ".updated_value = " + m + ".id_id " +
+                " and ((" + e + ".vst > " + m + ".vst and " + e + ".vst < " + m + ".vet) or (" + e + ".vet > " + m + ".vst and " + e + ".vet < " + m + ".vet)) " + where + ";";
+
+//        user query
+//        "tselect difference employee e tjoin department d on e.d_id = d.d_id ;"
+//        or
+//        "tselect difference employee e tjoin department d on e.d_id = d.d_id where d.d_id = 1 ;"
+
+
+//        modified query
+//        select m.id_id as department_id,m.updated_value as m_id, e.id_id as employee_id, e.updated_value as department_id,
+//        (case when m.vst < e.vst then m.vst else NULL end) as left_startdate,
+//        (case when (m.vet < e.vet and m.vet > e.vst) or ((e.vst between m.vst and m.vet) and (e.vet between m.vst and m.vet)) then e.vst else NULL end) as left_enddate,
+//        (case when (e.vst < m.vst and e.vet > m.vst) or ((e.vst between m.vst and m.vet) and (e.vet between m.vst and m.vet)) then e.vst else NULL end) as right_startdate,
+//        (case when m.vet > e.vet then m.vet else NULL end) as right_enddate
+//        from department_vt m join employee_vt e on e.updated_value = m.id_id
+//        and ((e.vst > m.vst and e.vst < m.vet) or (e.vet > m.vst and e.vet < m.vet)) ;
 
         return query;
     }
