@@ -48,7 +48,10 @@ public class Application {
     }
 
     private static void executeInsert(Statement statement) throws SQLException {
-        String query = "tinsert into student values ( 4 , 'Henry' , 'active' , '3.75' , 'CSE' )";
+
+        // change id value before insertion
+
+        String query = "tinsert into student values ( 5 , 'Henry' , 'active' , '3.75' , 'CSE' )";
 //        String query = "create table  dummy(id int,val int,lsst timestamp,lset timestamp)";
 //        String query = "tinsert into dummy values (1,2)";
         statement.executeUpdate(query);
