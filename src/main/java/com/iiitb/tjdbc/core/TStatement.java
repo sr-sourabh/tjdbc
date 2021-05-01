@@ -90,6 +90,7 @@ public class TStatement {
         }
 
         String updatedValue = getUpdateValue(tokens);
+        updatedValue = updatedValue.replace("'", "");
 
         //insert new record in vt table to reflect update
         String insertHistoryRecordTableVtQuery = "insert into " + tableVt +
@@ -202,10 +203,7 @@ public class TStatement {
         currQuery = currQuery.replace(TJdbc.TINSERT, "insert");
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         String lsst = timestamp.toString();
-        //String lsst = "2011-01-01 00:00:02";
-
         String lset = "2037-01-19 03:14:07";
-
 
         currQuery = currQuery.substring(0, currQuery.length() - 1);
         String addTimestamp = ", '" + lsst + "', '" + lset + "');";
@@ -217,7 +215,7 @@ public class TStatement {
         int size = tokens.size();
         int i = 5;
         String que = "";
-        int j = 1;
+        int j = 0;
         while (i < size) {
             que = "insert into " + table + "(indx,updated_value,prev_value,vst,vet,id_id)" + " values ( " + j + " , " + tokens.get(i) + " , NULL , " + "'" + lsst + "'" + " , NULL , " + tokens.get(5) + " );";
 //            insert into dummy_vt(indx,updated_value,prev_value,vst,vet,id_id)  values (1, 11, NULL, vst , NULL, 2 );
@@ -242,7 +240,7 @@ public class TStatement {
         String newQuery = "";
         while (i < tokens.size() && !tokens.get(i).equals("where")) {
             if (tokens.get(i).equals("from")) {
-                newQuery += ", prev_value ";
+                newQuery += ", updated_value ";
             }
             newQuery += tokens.get(i++) + " ";
         }
@@ -319,7 +317,6 @@ public class TStatement {
     public String handlePrevious(Map<String, Integer> keywordPositionMap, List<String> tokens, Statement statement) throws SQLException {
         String query = "";
         String tableName = tokens.get(5);
-        ;
         String tableVt = tableName + "_vt";
         String value = tokens.get(2);
 
@@ -332,8 +329,6 @@ public class TStatement {
         query = tokens.get(0) + " id_id, prev_value, vst, vet from " + tableVt + " where id_" + id +
                 " and indx=" + indx + " and updated_value = " + "'" + value + "'" + " ;";
 
-//        select previous Civil major from student where id=1;
-//        select id_id, prev_value,VST,VET from student_VT where id_id=1 and indx=4 and updated_value = "Civil";
         return query;
     }
 
@@ -382,6 +377,7 @@ public class TStatement {
         query = query + ";";
         pureDeleteQuery = query;
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        where = where.replace("id", "id_id");
         String updateDateQuery = "update " + tableVt + " SET vet = '" + timestamp + "' " + where + " and vet is NULL";
         statement.executeUpdate(updateDateQuery);
 
@@ -504,7 +500,7 @@ public class TStatement {
 
 // updated query
 //        with temp as (select vst,id_id from student_vt where indx = 3 and updated_value = 5.2) ,  temp2 as (select vst,id_id from student_vt where indx = 3 and updated_value = 2.9)  select * from student_vt s join temp t on s.id_id = t.id_id and s.vst >= t.vst join temp2 t2 on t2.id_id=s.id_id and s.vst<=t2.vst where s.indx=3;
-//        with temp as (select vst,id_id from student_vt where indx = 3 and updated_value = 5.2) ,  temp2 as (select vst,id_id from student_vt where indx = 3 and updated_value = 2.9;)  select * from student_vt s join temp t on s.id_id = t.id_id and s.vst >= t.vst join temp2 t2 on t2.id_id=s.id_id and s.vst<=t2.vst where s.indx=3;
+//        with temp as (select vst,id_id from student_vt where indx = 3 and updated_value = 5.2) ,  temp2 as (select vst,id_id from student_vt where indx = 3 and updated_value = 2.9)  select * from student_vt s join temp t on s.id_id = t.id_id and s.vst >= t.vst join temp2 t2 on t2.id_id=s.id_id and s.vst<=t2.vst where s.indx=3;
 
         return query;
     }
