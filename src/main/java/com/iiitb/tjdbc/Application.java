@@ -17,7 +17,7 @@ public class Application {
 
             //uncomment only the part you are working on
 //            executeTemporalize(statement);
-//            executeInsert(statement);
+            executeInsert(statement);
 //            executeFirst(statement);
 //            executeLast(statement);
 //            executeTUpdate(statement);
@@ -32,7 +32,7 @@ public class Application {
             //executeNext(statement);
 //            executeEvolution_history(statement);
 //            executeTdelete(statement);
-            executedifference(statement);
+//            executedifference(statement);
             connection.close();
 
         } catch (Exception e) {
@@ -43,14 +43,17 @@ public class Application {
 
     private static void executeTUpdate(Statement statement) throws SQLException {
 //        String query = "tupdate student set gpa = 10.2 where id = 1 ";
-        String query = "tupdate dummy set val = 10 where id = 1 ";
+        String query = "tupdate dummy set var = 10 where id = 1 ";
         statement.executeUpdate(query);
     }
 
     private static void executeInsert(Statement statement) throws SQLException {
-//        String query = "tinsert into student values (6,'Henry','active','3.75','CSE')";
+
+        // change id value before insertion
+
+        String query = "tinsert into student values ( 5 , 'Henry' , 'active' , '3.75' , 'CSE' )";
 //        String query = "create table  dummy(id int,val int,lsst timestamp,lset timestamp)";
-        String query = "tinsert into dummy values (1,2)";
+//        String query = "tinsert into dummy values (1,2)";
         statement.executeUpdate(query);
     }
 

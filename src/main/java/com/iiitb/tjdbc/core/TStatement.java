@@ -31,7 +31,7 @@ public class TStatement {
         } else if (keywordPositionMap.containsKey(TJdbc.LAST)) {
             query = handlelast(keywordPositionMap, tokens);
         } else if (keywordPositionMap.containsKey(TJdbc.TINSERT)) {
-            query = handleInsert(query, tokens);
+            query = handleInsert(query, tokens, statement);
         } else if (keywordPositionMap.containsKey(TJdbc.TUPDATE)) {
             query = handleTUpdate(query, tokens, keywordPositionMap, statement);
         } else if (keywordPositionMap.containsKey(TJdbc.PREVIOUS)) {
@@ -196,18 +196,38 @@ public class TStatement {
         return tempQuery;
     }
 
-    public String handleInsert(String currQuery, List<String> tokens) {
+    public String handleInsert(String currQuery, List<String> tokens, Statement statement) throws SQLException {
         // currQuery --> "Insert into Student values ('Mike',1,'active','3.4','CSE')"
         // finding current time stamp
         currQuery = currQuery.replace(TJdbc.TINSERT, "insert");
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         String lsst = timestamp.toString();
         //String lsst = "2011-01-01 00:00:02";
+
         String lset = "2037-01-19 03:14:07";
+
+
         currQuery = currQuery.substring(0, currQuery.length() - 1);
         String addTimestamp = ", '" + lsst + "', '" + lset + "');";
         currQuery = currQuery + addTimestamp;
         System.out.println(currQuery);
+
+        // for vt
+        String table = tokens.get(2) + "_vt";
+        int size = tokens.size();
+        int i = 5;
+        String que = "";
+        int j = 1;
+        while (i < size) {
+            que = "insert into " + table + "(indx,updated_value,prev_value,vst,vet,id_id)" + " values ( " + j + " , " + tokens.get(i) + " , NULL , " + "'" + lsst + "'" + " , NULL , " + tokens.get(5) + " );";
+//            insert into dummy_vt(indx,updated_value,prev_value,vst,vet,id_id)  values (1, 11, NULL, vst , NULL, 2 );
+//            insert into dummy_vt(indx,updated_value,prev_value,vst,vet,id_id) values ( 1 , 9 , NULL , 2021-05-01 16:36:35.728 , NULL , 9 );
+            j++;
+            i = i + 2;
+            System.out.println(que);
+            statement.executeUpdate(que);
+        }
+
         return currQuery;
     }
 
