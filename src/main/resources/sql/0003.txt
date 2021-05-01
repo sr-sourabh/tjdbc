@@ -1,0 +1,3 @@
+String query = "tinsert into student values ( 1 , 'Mike' , 'active' , '7.2' , 'CSE' )";
+String query = "tinsert into student values ( 2 , 'Shourabh' , 'active' , '3.8' , 'CSE' )";
+String query = "tinsert into student values ( 3 , 'Ayush' , 'active' , '3.9' , 'ECE' )";
